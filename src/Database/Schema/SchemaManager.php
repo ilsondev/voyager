@@ -55,7 +55,7 @@ abstract class SchemaManager
             return [$column => [
                 'name'          => $column,
                 'type'          => ['name' => $details['type']],
-                'notnull'       => ($details['nullable'] === 'NO'),
+                'notnull'       => (bool) $details['nullable'],
                 'default'       => $details['default'],
                 'autoincrement' => (bool) $details['auto_increment'],
                 'length'        => $details['length'] ?? null,
