@@ -46,7 +46,7 @@ abstract class SchemaBuilder
         }
 
         $default = $column->getDefault();
-        if ($default !== null && $default !== '') {
+        if ($default !== null) {
             $definition->default($default);
         }
 
