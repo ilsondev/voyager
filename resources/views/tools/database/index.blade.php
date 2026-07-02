@@ -62,17 +62,17 @@
                         </td>
 
                         <td class="actions">
-                            <a class="btn btn-danger btn-sm pull-right delete_table @if($table->dataTypeId) remove-bread-warning @endif"
+                            <a class="btn btn-danger btn-sm float-end delete_table @if($table->dataTypeId) remove-bread-warning @endif"
                                data-table="{{ $table->prefix.$table->name }}">
                                <i class="voyager-trash"></i> {{ __('voyager::generic.delete') }}
                             </a>
                             <a href="{{ route('voyager.database.edit', $table->prefix.$table->name) }}"
-                               class="btn btn-sm btn-primary pull-right" style="display:inline; margin-right:10px;">
+                               class="btn btn-sm btn-primary float-end" style="display:inline; margin-right:10px;">
                                <i class="voyager-edit"></i> {{ __('voyager::generic.edit') }}
                             </a>
                             <a href="{{ route('voyager.database.show', $table->prefix.$table->name) }}"
                                data-name="{{ $table->name }}"
-                               class="btn btn-sm btn-warning pull-right desctable" style="display:inline; margin-right:10px;">
+                               class="btn btn-sm btn-warning float-end desctable" style="display:inline; margin-right:10px;">
                                <i class="voyager-eye"></i> {{ __('voyager::generic.view') }}
                             </a>
                         </td>
@@ -88,8 +88,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span
-                                aria-hidden="true">&times;</span></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title"><i class="voyager-trash"></i>  {!! __('voyager::bread.delete_bread_quest', ['table' => '<span id="delete_bread_name"></span>']) !!}</h4>
                 </div>
                 <div class="modal-footer">
@@ -98,7 +97,7 @@
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         <input type="submit" class="btn btn-danger" value="{{ __('voyager::bread.delete_bread_conf') }}">
                     </form>
-                    <button type="button" class="btn btn-outline pull-right" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-outline float-end" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -108,17 +107,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span
-                                aria-hidden="true">&times;</span></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title"><i class="voyager-trash"></i> {!! __('voyager::database.delete_table_question', ['table' => '<span id="delete_table_name"></span>']) !!}</h4>
                 </div>
                 <div class="modal-footer">
                     <form action="#" id="delete_table_form" method="POST">
                         {{ method_field('DELETE') }}
                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                        <input type="submit" class="btn btn-danger pull-right" value="{{ __('voyager::database.delete_table_confirm') }}">
-                        <button type="button" class="btn btn-outline pull-right" style="margin-right:10px;"
-                                data-dismiss="modal">{{ __('voyager::generic.cancel') }}
+                        <input type="submit" class="btn btn-danger float-end" value="{{ __('voyager::database.delete_table_confirm') }}">
+                        <button type="button" class="btn btn-outline float-end" style="margin-right:10px;"
+                                data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}
                         </button>
                     </form>
 
@@ -131,8 +129,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span
-                                aria-hidden="true">&times;</span></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title"><i class="voyager-data"></i> @{{ table.name }}</h4>
                 </div>
                 <div class="modal-body" style="overflow:scroll">
@@ -160,7 +157,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline pull-right" data-dismiss="modal">{{ __('voyager::generic.close') }}</button>
+                    <button type="button" class="btn btn-outline float-end" data-bs-dismiss="modal">{{ __('voyager::generic.close') }}</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

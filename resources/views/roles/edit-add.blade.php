@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="panel panel-bordered">
+                <div class="card panel-bordered">
                     <!-- form start -->
                     <form class="form-edit-add" role="form"
                           action="@if(isset($dataTypeContent->id)){{ route('voyager.'.$dataType->slug.'.update', $dataTypeContent->id) }}@else{{ route('voyager.'.$dataType->slug.'.store') }}@endif"
@@ -33,7 +33,7 @@
                         <!-- CSRF TOKEN -->
                         {{ csrf_field() }}
 
-                        <div class="panel-body">
+                        <div class="card-body">
 
                             @if (count($errors) > 0)
                                 <div class="alert alert-danger">
@@ -75,8 +75,8 @@
                                     </li>
                                 @endforeach
                             </ul>
-                        </div><!-- panel-body -->
-                        <div class="panel-footer">
+                        </div><!-- card-body -->
+                        <div class="card-footer">
                             <button type="submit" class="btn btn-primary">{{ __('voyager::generic.submit') }}</button>
                         </div>
                     </form>
@@ -94,8 +94,6 @@
 @section('javascript')
     <script>
         $('document').ready(function () {
-            $('.toggleswitch').bootstrapToggle();
-
             $('.permission-group').on('change', function(){
                 $(this).siblings('ul').find("input[type='checkbox']").prop('checked', this.checked);
             });

@@ -8,23 +8,23 @@
 
         @can('edit', $dataTypeContent)
             <a href="{{ route('voyager.'.$dataType->slug.'.edit', $dataTypeContent->getKey()) }}" class="btn btn-info">
-                <i class="glyphicon glyphicon-pencil"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.edit') }}</span>
+                <i class="voyager-edit"></i> <span class="d-none d-md-block">{{ __('voyager::generic.edit') }}</span>
             </a>
         @endcan
         @can('delete', $dataTypeContent)
             @if($isSoftDeleted)
                 <a href="{{ route('voyager.'.$dataType->slug.'.restore', $dataTypeContent->getKey()) }}" title="{{ __('voyager::generic.restore') }}" class="btn btn-default restore" data-id="{{ $dataTypeContent->getKey() }}" id="restore-{{ $dataTypeContent->getKey() }}">
-                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.restore') }}</span>
+                    <i class="voyager-trash"></i> <span class="d-none d-md-block">{{ __('voyager::generic.restore') }}</span>
                 </a>
             @else
                 <a href="javascript:;" title="{{ __('voyager::generic.delete') }}" class="btn btn-danger delete" data-id="{{ $dataTypeContent->getKey() }}" id="delete-{{ $dataTypeContent->getKey() }}">
-                    <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.delete') }}</span>
+                    <i class="voyager-trash"></i> <span class="d-none d-md-block">{{ __('voyager::generic.delete') }}</span>
                 </a>
             @endif
         @endcan
         @can('browse', $dataTypeContent)
         <a href="{{ route('voyager.'.$dataType->slug.'.index') }}" class="btn btn-warning">
-            <i class="glyphicon glyphicon-list"></i> <span class="hidden-xs hidden-sm">{{ __('voyager::generic.return_to_list') }}</span>
+            <i class="voyager-list"></i> <span class="d-none d-md-block">{{ __('voyager::generic.return_to_list') }}</span>
         </a>
         @endcan
     </h1>
@@ -36,7 +36,7 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="panel panel-bordered" style="padding-bottom:5px;">
+                <div class="card panel-bordered" style="padding-bottom:5px;">
                     <!-- form start -->
                     @foreach($dataType->readRows as $row)
                         @php
@@ -44,11 +44,11 @@
                             $dataTypeContent->{$row->field} = $dataTypeContent->{$row->field.'_read'};
                         }
                         @endphp
-                        <div class="panel-heading" style="border-bottom:0;">
-                            <h3 class="panel-title">{{ $row->getTranslatedAttribute('display_name') }}</h3>
+                        <div class="card-header" style="border-bottom:0;">
+                            <h3 class="card-title">{{ $row->getTranslatedAttribute('display_name') }}</h3>
                         </div>
 
-                        <div class="panel-body" style="padding-top:0;">
+                        <div class="card-body" style="padding-top:0;">
                             @if (isset($row->details->view_read))
                                 @include($row->details->view_read, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'view' => 'read', 'options' => $row->details])
                             @elseif (isset($row->details->view))
@@ -99,9 +99,9 @@
                             @elseif($row->type == 'checkbox')
                                 @if(property_exists($row->details, 'on') && property_exists($row->details, 'off'))
                                     @if($dataTypeContent->{$row->field})
-                                    <span class="label label-info">{{ $row->details->on }}</span>
+                                    <span class="badge text-bg-info">{{ $row->details->on }}</span>
                                     @else
-                                    <span class="label label-primary">{{ $row->details->off }}</span>
+                                    <span class="badge text-bg-primary">{{ $row->details->off }}</span>
                                     @endif
                                 @else
                                 {{ $dataTypeContent->{$row->field} }}
@@ -130,7 +130,7 @@
                                 @include('voyager::multilingual.input-hidden-bread-read')
                                 <p>{{ $dataTypeContent->{$row->field} }}</p>
                             @endif
-                        </div><!-- panel-body -->
+                        </div><!-- card-body -->
                         @if(!$loop->last)
                             <hr style="margin:0;">
                         @endif
@@ -146,17 +146,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title"><i class="voyager-trash"></i> {{ __('voyager::generic.delete_question') }} {{ strtolower($dataType->getTranslatedAttribute('display_name_singular')) }}?</h4>
                 </div>
                 <div class="modal-footer">
                     <form action="{{ route('voyager.'.$dataType->slug.'.index') }}" id="delete_form" method="POST">
                         {{ method_field('DELETE') }}
                         {{ csrf_field() }}
-                        <input type="submit" class="btn btn-danger pull-right delete-confirm"
+                        <input type="submit" class="btn btn-danger float-end delete-confirm"
                                value="{{ __('voyager::generic.delete_confirm') }} {{ strtolower($dataType->getTranslatedAttribute('display_name_singular')) }}">
                     </form>
-                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default float-end" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

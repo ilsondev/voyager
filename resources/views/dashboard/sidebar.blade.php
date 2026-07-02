@@ -1,5 +1,5 @@
 <div class="side-menu sidebar-inverse">
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar" role="navigation">
         <div class="side-menu-container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="{{ route('voyager.dashboard') }}">
@@ -15,7 +15,7 @@
                 </a>
             </div><!-- .navbar-header -->
 
-            <div class="panel widget center bgimage"
+            <div class="card widget center bgimage"
                  style="background-image:url({{ Voyager::image( Voyager::setting('admin.bg_image'), voyager_asset('images/bg.jpg') ) }}); background-size: cover; background-position: 0px;">
                 <div class="dimmer"></div>
                 <div class="panel-content">

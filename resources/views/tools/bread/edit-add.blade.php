@@ -29,7 +29,7 @@
 @stop
 
 @section('breadcrumbs')
-<ol class="breadcrumb hidden-xs">
+<ol class="breadcrumb d-none d-sm-block">
     <li class="active">
         <a href="{{ route('voyager.dashboard')}}"><i class="voyager-boat"></i> {{ __('voyager::generic.dashboard') }}</a>
     </li>
@@ -69,16 +69,16 @@
                     <!-- CSRF TOKEN -->
                     {{ csrf_field() }}
 
-                    <div class="panel panel-primary panel-bordered">
+                    <div class="card panel-primary panel-bordered">
 
-                        <div class="panel-heading">
-                            <h3 class="panel-title panel-icon"><i class="voyager-bread"></i> {{ ucfirst($table) }} {{ __('voyager::bread.bread_info') }}</h3>
+                        <div class="card-header">
+                            <h3 class="card-title panel-icon"><i class="voyager-bread"></i> {{ ucfirst($table) }} {{ __('voyager::bread.bread_info') }}</h3>
                             <div class="panel-actions">
                                 <a class="panel-action voyager-angle-up" data-toggle="panel-collapse" aria-hidden="true"></a>
                             </div>
                         </div>
 
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="row clearfix">
                                 <div class="col-md-6 form-group">
                                     <label for="name">{{ __('voyager::database.table_name') }}</label>
@@ -138,7 +138,7 @@
                                     <label for="model_name">{{ __('voyager::bread.model_name') }}</label>
                                     <span class="voyager-question"
                                         aria-hidden="true"
-                                        data-toggle="tooltip"
+                                        data-bs-toggle="tooltip"
                                         data-placement="right"
                                         title="{{ __('voyager::bread.model_name_ph') }}"></span>
                                     <input type="text" class="form-control" name="model_name" placeholder="{{ __('voyager::bread.model_class') }}"
@@ -148,7 +148,7 @@
                                     <label for="controller">{{ __('voyager::bread.controller_name') }}</label>
                                     <span class="voyager-question"
                                         aria-hidden="true"
-                                        data-toggle="tooltip"
+                                        data-bs-toggle="tooltip"
                                         data-placement="right"
                                         title="{{ __('voyager::bread.controller_name_hint') }}"></span>
                                     <input type="text" class="form-control" name="controller" placeholder="{{ __('voyager::bread.controller_name') }}"
@@ -160,7 +160,7 @@
                                     <label for="policy_name">{{ __('voyager::bread.policy_name') }}</label>
                                     <span class="voyager-question"
                                           aria-hidden="true"
-                                          data-toggle="tooltip"
+                                          data-bs-toggle="tooltip"
                                           data-placement="right"
                                           title="{{ __('voyager::bread.policy_name_ph') }}"></span>
                                     <input type="text" class="form-control" name="policy_name" placeholder="{{ __('voyager::bread.policy_class') }}"
@@ -169,22 +169,24 @@
                                 <div class="col-md-3 form-group">
                                     <label for="generate_permissions">{{ __('voyager::bread.generate_permissions') }}</label><br>
                                     <?php $checked = (isset($dataType->generate_permissions) && $dataType->generate_permissions == 1) || (isset($generate_permissions) && $generate_permissions); ?>
-                                    <input type="checkbox"
-                                           name="generate_permissions"
-                                           class="toggleswitch"
-                                           data-on="{{ __('voyager::generic.yes') }}"
-                                           data-off="{{ __('voyager::generic.no') }}"
-                                           @if($checked) checked @endif >
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox"
+                                               name="generate_permissions"
+                                               class="form-check-input"
+                                               role="switch"
+                                               @if($checked) checked @endif >
+                                    </div>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label for="server_side">{{ __('voyager::bread.server_pagination') }}</label><br>
                                     <?php $checked = (isset($dataType->server_side) && $dataType->server_side == 1) || (isset($server_side) && $server_side); ?>
-                                    <input type="checkbox"
-                                           name="server_side"
-                                           class="toggleswitch"
-                                           data-on="{{ __('voyager::generic.yes') }}"
-                                           data-off="{{ __('voyager::generic.no') }}"
-                                           @if($checked) checked @endif >
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox"
+                                               name="server_side"
+                                               class="form-check-input"
+                                               role="switch"
+                                               @if($checked) checked @endif >
+                                    </div>
                                 </div>
                             </div>
                             <div class="row clearfix">
@@ -192,7 +194,7 @@
                                     <label for="order_column">{{ __('voyager::bread.order_column') }}</label>
                                     <span class="voyager-question"
                                           aria-hidden="true"
-                                          data-toggle="tooltip"
+                                          data-bs-toggle="tooltip"
                                           data-placement="right"
                                           title="{{ __('voyager::bread.order_column_ph') }}"></span>
                                     <select name="order_column" class="select2 form-control">
@@ -208,7 +210,7 @@
                                     <label for="order_display_column">{{ __('voyager::bread.order_ident_column') }}</label>
                                     <span class="voyager-question"
                                           aria-hidden="true"
-                                          data-toggle="tooltip"
+                                          data-bs-toggle="tooltip"
                                           data-placement="right"
                                           title="{{ __('voyager::bread.order_ident_column_ph') }}"></span>
                                     <select name="order_display_column" class="select2 form-control">
@@ -235,7 +237,7 @@
                                     <label for="default_search_key">{{ __('voyager::bread.default_search_key') }}</label>
                                     <span class="voyager-question"
                                           aria-hidden="true"
-                                          data-toggle="tooltip"
+                                          data-bs-toggle="tooltip"
                                           data-placement="right"
                                           title="{{ __('voyager::bread.default_search_key_ph') }}"></span>
                                     <select name="default_search_key" class="select2 form-control">
@@ -270,25 +272,25 @@
                                     >{{ $dataType->description ?? '' }}</textarea>
                                 </div>
                             </div>
-                        </div><!-- .panel-body -->
-                    </div><!-- .panel -->
+                        </div><!-- .card-body -->
+                    </div><!-- .card -->
 
 
-                    <div class="panel panel-primary panel-bordered">
-                        <div class="panel-heading">
-                            <h3 class="panel-title panel-icon"><i class="voyager-window-list"></i> {{ __('voyager::bread.edit_rows', ['table' => $table]) }}:</h3>
+                    <div class="card panel-primary panel-bordered">
+                        <div class="card-header">
+                            <h3 class="card-title panel-icon"><i class="voyager-window-list"></i> {{ __('voyager::bread.edit_rows', ['table' => $table]) }}:</h3>
                             <div class="panel-actions">
                                 <a class="panel-action voyager-angle-up" data-toggle="panel-collapse" aria-hidden="true"></a>
                             </div>
                         </div>
 
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="row fake-table-hd">
-                                <div class="col-xs-2">{{ __('voyager::database.field') }}</div>
-                                <div class="col-xs-2">{{ __('voyager::database.visibility') }}</div>
-                                <div class="col-xs-2">{{ __('voyager::database.input_type') }}</div>
-                                <div class="col-xs-2">{{ __('voyager::bread.display_name') }}</div>
-                                <div class="col-xs-4">{{ __('voyager::database.optional_details') }}</div>
+                                <div class="col-2">{{ __('voyager::database.field') }}</div>
+                                <div class="col-2">{{ __('voyager::database.visibility') }}</div>
+                                <div class="col-2">{{ __('voyager::database.input_type') }}</div>
+                                <div class="col-2">{{ __('voyager::bread.display_name') }}</div>
+                                <div class="col-4">{{ __('voyager::database.optional_details') }}</div>
                             </div>
 
                             <div id="bread-items">
@@ -305,7 +307,7 @@
                                 @endif
 
                                 <div class="row row-dd">
-                                    <div class="col-xs-2">
+                                    <div class="col-2">
                                         <h4><strong>{{ $data['field'] }}</strong></h4>
                                         <strong>{{ __('voyager::database.type') }}:</strong> <span>{{ $data['type'] }}</span><br/>
                                         <strong>{{ __('voyager::database.key') }}:</strong> <span>{{ $data['key'] }}</span><br/>
@@ -320,7 +322,7 @@
                                         <div class="handler voyager-handle"></div>
                                         <input class="row_order" type="hidden" value="{{ $dataRow->order ?? $r_order }}" name="field_order_{{ $data['field'] }}">
                                     </div>
-                                    <div class="col-xs-2">
+                                    <div class="col-2">
                                         <input type="checkbox"
                                                id="field_browse_{{ $data['field'] }}"
                                                name="field_browse_{{ $data['field'] }}"
@@ -349,7 +351,7 @@
                                                name="field_delete_{{ $data['field'] }}" @if(isset($dataRow->delete) && $dataRow->delete) checked="checked" @elseif($data['key'] == 'PRI')@elseif($data['type'] == 'timestamp' && $data['field'] == 'updated_at')@elseif(!isset($dataRow->delete)) checked="checked" @endif>
                                                 <label for="field_delete_{{ $data['field'] }}">{{ __('voyager::generic.delete') }}</label><br/>
                                     </div>
-                                    <div class="col-xs-2">
+                                    <div class="col-2">
                                         <input type="hidden" name="field_{{ $data['field'] }}" value="{{ $data['field'] }}">
                                         @if($data['type'] == 'timestamp')
                                             <p>{{ __('voyager::generic.timestamp') }}</p>
@@ -368,7 +370,7 @@
                                             </select>
                                         @endif
                                     </div>
-                                    <div class="col-xs-2">
+                                    <div class="col-2">
                                         @if($isModelTranslatable)
                                             @include('voyager::multilingual.input-hidden', [
                                                 'isModelTranslatable' => true,
@@ -380,7 +382,7 @@
                                                value="{{ $dataRow->display_name ?? ucwords(str_replace('_', ' ', $data['field'])) }}"
                                                name="field_display_name_{{ $data['field'] }}">
                                     </div>
-                                    <div class="col-xs-4">
+                                    <div class="col-4">
                                         <div class="alert alert-danger validation-error">
                                             {{ __('voyager::json.invalid') }}
                                         </div>
@@ -405,14 +407,14 @@
 
                             </div>
 
-                        </div><!-- .panel-body -->
-                        <div class="panel-footer">
+                        </div><!-- .card-body -->
+                        <div class="card-footer">
                              <div class="btn btn-new-relationship"><i class="voyager-heart"></i> <span>
                              {{ __('voyager::database.relationship.create') }}</span></div>
                         </div>
-                    </div><!-- .panel -->
+                    </div><!-- .card -->
 
-                    <button type="submit" class="btn pull-right btn-primary">{{ __('voyager::generic.submit') }}</button>
+                    <button type="submit" class="btn float-end btn-primary">{{ __('voyager::generic.submit') }}</button>
 
                 </form>
             </div><!-- .col-md-12 -->
@@ -448,9 +450,7 @@
 
             $('#bread-items').disableSelection();
 
-            $('[data-toggle="tooltip"]').tooltip();
-
-            $('.toggleswitch').bootstrapToggle();
+            $('[data-bs-toggle="tooltip"]').tooltip();
 
             $('textarea[data-editor]').each(function () {
                 var textarea = $(this),

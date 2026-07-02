@@ -24,7 +24,9 @@
         @endcan
         @can('delete', app($dataType->model_name))
             @if($usesSoftDeletes)
-                <input type="checkbox" @if ($showSoftDeleted) checked @endif id="show_soft_deletes" data-toggle="toggle" data-on="{{ __('voyager::bread.soft_deletes_off') }}" data-off="{{ __('voyager::bread.soft_deletes_on') }}">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" role="switch" @if ($showSoftDeleted) checked @endif id="show_soft_deletes">
+                </div>
             @endif
         @endcan
         @foreach($actions as $action)
@@ -41,8 +43,8 @@
         @include('voyager::alerts')
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-bordered">
-                    <div class="panel-body">
+                <div class="card panel-bordered">
+                    <div class="card-body">
                         @if ($isServerSide)
                             <form method="get" class="form-search">
                                 <div id="search-input">
@@ -61,11 +63,9 @@
                                     </div>
                                     <div class="input-group col-md-12">
                                         <input type="text" class="form-control" placeholder="{{ __('voyager::generic.search') }}" name="s" value="{{ $search->value }}">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-info btn-lg" type="submit">
-                                                <i class="voyager-search"></i>
-                                            </button>
-                                        </span>
+                                        <button class="btn btn-info btn-lg" type="submit">
+                                            <i class="voyager-search"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 @if (Request::has('sort_order') && Request::has('order_by'))
@@ -92,9 +92,9 @@
                                             @if ($isServerSide)
                                                 @if ($row->isCurrentSortField($orderBy))
                                                     @if ($sortOrder == 'asc')
-                                                        <i class="voyager-angle-up pull-right"></i>
+                                                        <i class="voyager-angle-up float-end"></i>
                                                     @else
-                                                        <i class="voyager-angle-down pull-right"></i>
+                                                        <i class="voyager-angle-down float-end"></i>
                                                     @endif
                                                 @endif
                                                 </a>
@@ -170,9 +170,9 @@
                                                 @elseif($row->type == 'checkbox')
                                                     @if(property_exists($row->details, 'on') && property_exists($row->details, 'off'))
                                                         @if($data->{$row->field})
-                                                            <span class="label label-info">{{ $row->details->on }}</span>
+                                                            <span class="badge text-bg-info">{{ $row->details->on }}</span>
                                                         @else
-                                                            <span class="label label-primary">{{ $row->details->off }}</span>
+                                                            <span class="badge text-bg-primary">{{ $row->details->off }}</span>
                                                         @endif
                                                     @else
                                                     {{ $data->{$row->field} }}
@@ -265,7 +265,7 @@
                             </table>
                         </div>
                         @if ($isServerSide)
-                            <div class="pull-left">
+                            <div class="float-start">
                                 <div role="status" class="show-res" aria-live="polite">{{ trans_choice(
                                     'voyager::generic.showing_entries', $dataTypeContent->total(), [
                                         'from' => $dataTypeContent->firstItem(),
@@ -273,7 +273,7 @@
                                         'all' => $dataTypeContent->total()
                                     ]) }}</div>
                             </div>
-                            <div class="pull-right">
+                            <div class="float-end">
                                 {{ $dataTypeContent->appends([
                                     's' => $search->value,
                                     'filter' => $search->filter,
@@ -295,16 +295,16 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title"><i class="voyager-trash"></i> {{ __('voyager::generic.delete_question') }} {{ strtolower($dataType->getTranslatedAttribute('display_name_singular')) }}?</h4>
                 </div>
                 <div class="modal-footer">
                     <form action="#" id="delete_form" method="POST">
                         {{ method_field('DELETE') }}
                         {{ csrf_field() }}
-                        <input type="submit" class="btn btn-danger pull-right delete-confirm" value="{{ __('voyager::generic.delete_confirm') }}">
+                        <input type="submit" class="btn btn-danger float-end delete-confirm" value="{{ __('voyager::generic.delete_confirm') }}">
                     </form>
-                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default float-end" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->

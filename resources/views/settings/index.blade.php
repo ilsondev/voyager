@@ -13,10 +13,10 @@
         .settings .panel-actions{
             right:0px;
         }
-        .panel hr {
+        .card hr {
             margin-bottom: 10px;
         }
-        .panel {
+        .card {
             padding-bottom: 15px;
         }
         .sort-icons {
@@ -37,7 +37,7 @@
         .page-title {
             margin-bottom: 0;
         }
-        .panel-title code {
+        .card-title code {
             border-radius: 30px;
             padding: 5px 10px;
             font-size: 11px;
@@ -54,7 +54,7 @@
             width: 100%;
             margin-top: 20px;
         }
-        .new-setting .panel-title {
+        .new-setting .card-title {
             margin: 0 auto;
             display: inline-block;
             color: #999fac;
@@ -66,7 +66,7 @@
             position: relative;
             padding-right: 15px;
         }
-        .settings .panel-title{
+        .settings .card-title{
             padding-left:0px;
             padding-right:0px;
         }
@@ -77,7 +77,7 @@
             width: 96%;
             margin-left: 2%;
         }
-        .new-setting .panel-title i {
+        .new-setting .card-title i {
             position: relative;
             top: 2px;
         }
@@ -230,13 +230,13 @@
             {{ method_field("PUT") }}
             {{ csrf_field() }}
             <input type="hidden" name="setting_tab" class="setting_tab" value="{{ $active }}" />
-            <div class="panel">
+            <div class="card">
 
                 <div class="page-content settings container-fluid">
                     <ul class="nav nav-tabs">
                         @foreach($settings as $group => $setting)
                             <li @if($group == $active) class="active" @endif>
-                                <a data-toggle="tab" href="#{{ \Illuminate\Support\Str::slug($group) }}">{{ $group }}</a>
+                                <a data-bs-toggle="tab" href="#{{ \Illuminate\Support\Str::slug($group) }}">{{ $group }}</a>
                             </li>
                         @endforeach
                     </ul>
@@ -245,8 +245,8 @@
                         @foreach($settings as $group => $group_settings)
                         <div id="{{ \Illuminate\Support\Str::slug($group) }}" class="tab-pane fade in @if($group == $active) active @endif">
                             @foreach($group_settings as $setting)
-                            <div class="panel-heading">
-                                <h3 class="panel-title">
+                            <div class="card-header">
+                                <h3 class="card-title">
                                     {{ $setting->display_name }} @if(config('voyager.show_dev_tips'))<code>setting('{{ $setting->key }}')</code>@endif
                                 </h3>
                                 <div class="panel-actions">
@@ -265,7 +265,7 @@
                                 </div>
                             </div>
 
-                            <div class="panel-body no-padding-left-right">
+                            <div class="card-body no-padding-left-right">
                                 <div class="col-md-10 no-padding-left-right">
                                     @if ($setting->type == "text")
                                         <input type="text" class="form-control" name="{{ $setting->key }}" value="{{ $setting->value }}">
@@ -330,11 +330,9 @@
                                     @elseif($setting->type == "checkbox")
                                         <?php $options = json_decode($setting->details); ?>
                                         <?php $checked = (isset($setting->value) && $setting->value == 1) ? true : false; ?>
-                                        @if (isset($options->on) && isset($options->off))
-                                            <input type="checkbox" name="{{ $setting->key }}" class="toggleswitch" @if($checked) checked @endif data-on="{{ $options->on }}" data-off="{{ $options->off }}">
-                                        @else
-                                            <input type="checkbox" name="{{ $setting->key }}" @if($checked) checked @endif class="toggleswitch">
-                                        @endif
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" name="{{ $setting->key }}" class="form-check-input" role="switch" @if($checked) checked @endif>
+                                        </div>
                                     @endif
                                 </div>
                                 <div class="col-md-2 no-padding-left-right">
@@ -355,18 +353,18 @@
                 </div>
 
             </div>
-            <button type="submit" class="btn btn-primary pull-right">{{ __('voyager::settings.save') }}</button>
+            <button type="submit" class="btn btn-primary float-end">{{ __('voyager::settings.save') }}</button>
         </form>
 
         <div style="clear:both"></div>
 
         @can('add', Voyager::model('Setting'))
-        <div class="panel" style="margin-top:10px;">
-            <div class="panel-heading new-setting">
+        <div class="card" style="margin-top:10px;">
+            <div class="card-header new-setting">
                 <hr>
-                <h3 class="panel-title"><i class="voyager-plus"></i> {{ __('voyager::settings.new') }}</h3>
+                <h3 class="card-title"><i class="voyager-plus"></i> {{ __('voyager::settings.new') }}</h3>
             </div>
-            <div class="panel-body">
+            <div class="card-body">
                 <form action="{{ route('voyager.settings.store') }}" method="POST">
                     {{ csrf_field() }}
                     <input type="hidden" name="setting_tab" class="setting_tab" value="{{ $active }}" />
@@ -415,7 +413,7 @@
                         </div>
                     </div>
                     <div style="clear:both"></div>
-                    <button type="submit" class="btn btn-primary pull-right new-setting-btn">
+                    <button type="submit" class="btn btn-primary float-end new-setting-btn">
                         <i class="voyager-plus"></i> {{ __('voyager::settings.add_new') }}
                     </button>
                     <div style="clear:both"></div>
@@ -430,9 +428,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title">
                         <i class="voyager-trash"></i> {!! __('voyager::settings.delete_question', ['setting' => '<span id="delete_setting_title"></span>']) !!}
                     </h4>
@@ -441,9 +437,9 @@
                     <form action="#" id="delete_form" method="POST">
                         {{ method_field("DELETE") }}
                         {{ csrf_field() }}
-                        <input type="submit" class="btn btn-danger pull-right delete-confirm" value="{{ __('voyager::settings.delete_confirm') }}">
+                        <input type="submit" class="btn btn-danger float-end delete-confirm" value="{{ __('voyager::settings.delete_confirm') }}">
                     </form>
-                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default float-end" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                 </div>
             </div>
         </div>
@@ -475,9 +471,7 @@
             });
             @endcan
 
-            $('.toggleswitch').bootstrapToggle();
-
-            $('[data-toggle="tab"]').click(function() {
+            $('[data-bs-toggle="tab"]').click(function() {
                 $(".setting_tab").val($(this).html());
             });
 
