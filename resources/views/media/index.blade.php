@@ -32,8 +32,6 @@
 
 @section('javascript')
 <script>
-new Vue({
-    el: '#filemanager'
-});
+VoyagerVue.createAdminApp({}, window.voyagerComponents).mount('#filemanager');
 </script>
 @endsection
