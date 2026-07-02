@@ -22,6 +22,8 @@ class DatabaseTest extends DatabaseTestCase
 
     protected $table;
 
+    protected $createResponse;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -43,14 +45,15 @@ class DatabaseTest extends DatabaseTestCase
         $this->table = $newTable->toArray();
 
         // Create the table through the HTTP endpoint.
-        $this->post(route('voyager.database.store'), [
+        $this->createResponse = $this->post(route('voyager.database.store'), [
             'table' => json_encode($this->table),
         ]);
     }
 
     public function test_table_created_successfully(): void
     {
-        session()->has('alerts');
+        $this->createResponse->assertSessionHas('alerts');
+        $this->createResponse->assertRedirect(route('voyager.database.index'));
         $this->assertTrue(SchemaManager::tableExists($this->table['name']));
 
         $dbTable = SchemaManager::listTableDetails($this->table['name']);
@@ -93,8 +96,10 @@ class DatabaseTest extends DatabaseTestCase
     {
         $this->assertTrue(SchemaManager::tableExists($this->table['name']));
 
-        $this->delete(route('voyager.database.destroy', $this->table['name']));
+        $response = $this->delete(route('voyager.database.destroy', $this->table['name']));
 
+        $response->assertSessionHas('alerts');
+        $response->assertRedirect(route('voyager.database.index'));
         $this->assertFalse(SchemaManager::tableExists($this->table['name']));
     }
 
@@ -225,9 +230,12 @@ class DatabaseTest extends DatabaseTestCase
 
     protected function update_table(array $table): Table
     {
-        $this->put(route('voyager.database.update', $table['oldName']), [
+        $response = $this->put(route('voyager.database.update', $table['oldName']), [
             'table' => json_encode($table),
         ]);
+
+        $response->assertSessionHas('alerts');
+        $response->assertRedirect(route('voyager.database.index'));
 
         return SchemaManager::listTableDetails($table['name']);
     }
