@@ -39,7 +39,8 @@
         return databaseTypes.Numbers[0];
     }
 
-    Vue.component('database-types', {
+    window.voyagerComponents = window.voyagerComponents || {};
+    window.voyagerComponents['database-types'] = {
         props: {
             column: {
                 type: Object,
@@ -60,5 +61,5 @@
                 return getDbType(name);
             }
         }
-    });
+    };
 </script>
