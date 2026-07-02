@@ -5,7 +5,7 @@
     $adv_details = array_diff_key(json_decode(json_encode($relationshipDetails), true), $relationshipKeyArray);
 @endphp
 <div class="row row-dd row-dd-relationship">
-    <div class="col-xs-2">
+    <div class="col-2">
         <h4><i class="voyager-heart"></i><strong>{{ $relationship->getTranslatedAttribute('display_name') }}</strong></h4>
         <div class="handler voyager-handle"></div>
         <strong>{{ __('voyager::database.type') }}:</strong> <span>{{ __('voyager::database.relationship.relationship') }}</span><br/>
@@ -14,7 +14,7 @@
         <div class="handler voyager-handle"></div>
         <input class="row_order" type="hidden" value="{{ $relationship['order'] }}" name="field_order_{{ $relationship['field'] }}">
     </div>
-    <div class="col-xs-2">
+    <div class="col-2">
         <input type="checkbox" name="field_browse_{{ $relationship['field'] }}" @if(isset($relationship->browse) && $relationship->browse) checked="checked" @elseif(!isset($relationship->browse)) checked="checked" @endif>
         <label for="field_browse_{{ $relationship['field'] }}"> {{ __('voyager::database.relationship.browse') }}</label><br>
         <input type="checkbox" name="field_read_{{ $relationship['field'] }}" @if(isset($relationship->read) && $relationship->read) checked="checked" @elseif(!isset($relationship->read)) checked="checked" @endif>
@@ -26,10 +26,10 @@
         <input type="checkbox" name="field_delete_{{ $relationship['field'] }}" @if(isset($relationship->delete) && $relationship->delete) checked="checked" @elseif(!isset($relationship->delete)) checked="checked" @endif>
         <label for="field_delete_{{ $relationship['field'] }}"> {{ __('voyager::database.relationship.delete') }}</label><br>
     </div>
-    <div class="col-xs-2">
+    <div class="col-2">
         <p>{{ __('voyager::database.relationship.relationship') }}</p>
     </div>
-    <div class="col-xs-2">
+    <div class="col-2">
         @if($isModelTranslatable)
             @include('voyager::multilingual.input-hidden', [
                 'isModelTranslatable' => true,
@@ -39,7 +39,7 @@
         @endif
         <input type="text" name="field_display_name_{{ $relationship['field'] }}" class="form-control relationship_display_name" value="{{ $relationship['display_name'] }}">
     </div>
-    <div class="col-xs-4">
+    <div class="col-4">
         <div class="voyager-relationship-details-btn">
             <i class="voyager-angle-down"></i><i class="voyager-angle-up"></i>
             <span class="open_text">{{ __('voyager::database.relationship.open') }}</span>
@@ -116,12 +116,14 @@
                     {{__('voyager::database.relationship.allow_tagging')}}
                 </label>
                 <span class="relationship_taggable">
-                    <input type="checkbox" name="relationship_taggable_{{ $relationship['field'] }}" class="toggleswitch" data-on="{{ __('voyager::generic.yes') }}" data-off="{{ __('voyager::generic.no') }}" {{$relationshipDetails->taggable == 'on' ? 'checked' : ''}}>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" name="relationship_taggable_{{ $relationship['field'] }}" class="form-check-input" role="switch" {{$relationshipDetails->taggable == 'on' ? 'checked' : ''}}>
+                    </div>
                 </span>
             @endisset
         </div>
         <div class="relationship_details_content margin_top">
-            <div class="col-xs-12" style="margin: 0px !important; padding: 0px !important;">
+            <div class="col-12" style="margin: 0px !important; padding: 0px !important;">
                 <div class="alert alert-danger validation-error">
                     {{ __('voyager::json.invalid') }}
                 </div>

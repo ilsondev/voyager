@@ -4,8 +4,7 @@
 		<div class="modal-dialog relationship-panel">
 		    <div class="model-content">
 		        <div class="modal-header">
-	                <button type="button" class="close" data-dismiss="modal"
-	                        aria-hidden="true">&times;</button>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 	                <h4 class="modal-title"><i class="voyager-heart"></i> {{ \Illuminate\Support\Str::singular(ucfirst($table)) }}
 					{{ __('voyager::database.relationship.relationships') }} </h4>
 	            </div>
@@ -73,7 +72,9 @@
                                         </select>
                                     </p>
 									<p class="relationship_taggable"><strong>{{ __('voyager::database.relationship.allow_tagging') }}:</strong> <br>
-										<input type="checkbox" name="relationship_taggable" class="toggleswitch" data-on="{{ __('voyager::generic.yes') }}" data-off="{{ __('voyager::generic.no') }}">
+										<div class="form-check form-switch">
+											<input type="checkbox" name="relationship_taggable" class="form-check-input" role="switch">
+										</div>
 				                    </p>
 				                </div>
 							</div>
@@ -88,7 +89,7 @@
 			    </div>
 			    <div class="modal-footer">
 			    	<div class="relationship-btn-container">
-			    		<button type="button" class="btn btn-default" data-dismiss="modal">{{ __('voyager::database.relationship.cancel') }}</button>
+			    		<button type="button" class="btn btn-default" data-bs-dismiss="modal">{{ __('voyager::database.relationship.cancel') }}</button>
 	                    @if(isset($dataType->id))
 	                    	<button class="btn btn-danger btn-relationship"><i class="voyager-plus"></i> <span>{{ __('voyager::database.relationship.add_new') }}</span></button>
 	                	@endif
