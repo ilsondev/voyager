@@ -12,90 +12,66 @@
     $showLatLng = $showLatLng ? 'true' : 'false';
 @endphp
 
-<div id="coordinates-formfield">
-    <coordinates
-        inline-template
-        ref="coordinates"
-        api-key="{{ config('voyager.googlemaps.key') }}"
-        :points='@json($dataTypeContent->getCoordinates() && count($dataTypeContent->getCoordinates()) ? $dataTypeContent->getCoordinates() : [[ 'lat' => config('voyager.googlemaps.center.lat'), 'lng' => config('voyager.googlemaps.center.lng') ]])'
-        :show-autocomplete="{{ $showAutocomplete }}"
-        :show-lat-lng="{{ $showLatLng }}"
-        :zoom={{ config('voyager.googlemaps.zoom') }}
-    >
-        <div>
-            <div class="form-group">
-                <div class="col-md-5" v-if="showAutocomplete">
-                    <label class="control-label">{{ __('voyager::generic.find_by_place') }}</label>
-                    <input
-                        class="form-control"
-                        type="text"
-                        placeholder="742 Evergreen Terrace"
-                        id="places-autocomplete"
-                        v-on:keypress="onInputKeyPress($event)"
-                    />
-                </div>
-                <div class="col-md-2" v-if="showLatLng">
-                    <label class="control-label">{{ __('voyager::generic.latitude') }}</label>
-                    <input
-                        class="form-control"
-                        type="number"
-                        step="any"
-                        name="{{ $row->field }}[lat]"
-                        placeholder="19.6400"
-                        v-model="lat"
-                        @change="onLatLngInputChange"
-                        v-on:keypress="onInputKeyPress($event)"
-                    />
-                </div>
-                <div class="col-md-2" v-if="showLatLng">
-                    <label class="control-label">{{ __('voyager::generic.longitude') }}</label>
-                    <input
-                        class="form-control"
-                        type="number"
-                        step="any"
-                        name="{{ $row->field }}[lng]"
-                        placeholder="-155.9969"
-                        v-model="lng"
-                        @change="onLatLngInputChange"
-                        v-on:keypress="onInputKeyPress($event)"
-                    />
-                </div>
+<div id="coordinates-formfield"></div>
 
-                <div class="clearfix"></div>
+@section('coordinates-template')
+    <div>
+        <div class="form-group">
+            <div class="col-md-5" v-if="showAutocomplete">
+                <label class="control-label">{{ __('voyager::generic.find_by_place') }}</label>
+                <input
+                    class="form-control"
+                    type="text"
+                    placeholder="742 Evergreen Terrace"
+                    id="places-autocomplete"
+                    v-on:keypress="onInputKeyPress($event)"
+                />
+            </div>
+            <div class="col-md-2" v-if="showLatLng">
+                <label class="control-label">{{ __('voyager::generic.latitude') }}</label>
+                <input
+                    class="form-control"
+                    type="number"
+                    step="any"
+                    name="{{ $row->field }}[lat]"
+                    placeholder="19.6400"
+                    v-model="lat"
+                    @change="onLatLngInputChange"
+                    v-on:keypress="onInputKeyPress($event)"
+                />
+            </div>
+            <div class="col-md-2" v-if="showLatLng">
+                <label class="control-label">{{ __('voyager::generic.longitude') }}</label>
+                <input
+                    class="form-control"
+                    type="number"
+                    step="any"
+                    name="{{ $row->field }}[lng]"
+                    placeholder="-155.9969"
+                    v-model="lng"
+                    @change="onLatLngInputChange"
+                    v-on:keypress="onInputKeyPress($event)"
+                />
             </div>
 
-            <div id="map"></div>
+            <div class="clearfix"></div>
         </div>
-    </coordinates>
-</div>
+
+        <div id="map"></div>
+    </div>
+@endsection
 
 @push('javascript')
     <script>
-        Vue.component('coordinates', {
-            props: {
-                apiKey: {
-                    type: String,
-                    required: true,
-                },
-                points: {
-                    type: Array,
-                    required: true,
-                },
-                showAutocomplete: {
-                    type: Boolean,
-                    default: true,
-                },
-                showLatLng: {
-                    type: Boolean,
-                    default: true,
-                },
-                zoom: {
-                    type: Number,
-                    required: true,
-                }
-            },
+        var gMapVm = Vue.createApp({
+            template: `@yield('coordinates-template')`,
             data() {
                 return {
+                    apiKey: '{{ config('voyager.googlemaps.key') }}',
+                    points: @json($dataTypeContent->getCoordinates() && count($dataTypeContent->getCoordinates()) ? $dataTypeContent->getCoordinates() : [[ 'lat' => config('voyager.googlemaps.center.lat'), 'lng' => config('voyager.googlemaps.center.lng') ]]),
+                    showAutocomplete: {{ $showAutocomplete }},
+                    showLatLng: {{ $showLatLng }},
+                    zoom: {{ config('voyager.googlemaps.zoom') }},
                     autocomplete: null,
                     lat: '',
                     lng: '',
@@ -108,7 +84,7 @@
             mounted() {
                 // Load Google Maps script
                 let gMapScript = document.createElement('script');
-                gMapScript.setAttribute('src', 'https://maps.googleapis.com/maps/api/js?key='+this.apiKey+'&callback=gMapVm.$refs.coordinates.initMap&libraries=places');
+                gMapScript.setAttribute('src', 'https://maps.googleapis.com/maps/api/js?key='+this.apiKey+'&callback=gMapVm.initMap&libraries=places');
                 document.head.appendChild(gMapScript);
             },
             methods: {
@@ -200,8 +176,6 @@
                     @endif
                 },
             }
-        });
-
-        var gMapVm = new Vue({ el: '#coordinates-formfield' });
+        }).mount('#coordinates-formfield');
     </script>
 @endpush
