@@ -12,7 +12,10 @@ let mix = require('laravel-mix');
  */
 
 mix.options({ processCssUrls: false }).sass('resources/assets/sass/app.scss', 'publishable/assets/css')
-.js('resources/assets/js/app.js', 'publishable/assets/js').vue({ version: 2 })
+// runtimeOnly must stay false (the default): most Vue components in this codebase are
+// registered with a runtime `template:` string pulled from a Blade @yield section rather
+// than a precompiled .vue SFC, so the shipped Vue build must include the runtime compiler.
+.js('resources/assets/js/app.js', 'publishable/assets/js').vue({ version: 3 })
 .copy('node_modules/tinymce/skins', 'publishable/assets/js/skins')
 .copy('resources/assets/js/skins', 'publishable/assets/js/skins')
 .copy('node_modules/tinymce/themes/silver', 'publishable/assets/js/themes/silver')
