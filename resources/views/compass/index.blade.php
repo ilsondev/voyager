@@ -24,9 +24,9 @@
 
     <div class="page-content compass container-fluid">
         <ul class="nav nav-tabs">
-          <li @if(empty($active_tab) || (isset($active_tab) && $active_tab == 'resources')){!! 'class="active"' !!}@endif><a data-toggle="tab" href="#resources"><i class="voyager-book"></i> {{ __('voyager::compass.resources.title') }}</a></li>
-          <li @if($active_tab == 'commands'){!! 'class="active"' !!}@endif><a data-toggle="tab" href="#commands"><i class="voyager-terminal"></i> {{ __('voyager::compass.commands.title') }}</a></li>
-          <li @if($active_tab == 'logs'){!! 'class="active"' !!}@endif><a data-toggle="tab" href="#logs"><i class="voyager-logbook"></i> {{ __('voyager::compass.logs.title') }}</a></li>
+          <li @if(empty($active_tab) || (isset($active_tab) && $active_tab == 'resources')){!! 'class="active"' !!}@endif><a data-bs-toggle="tab" href="#resources"><i class="voyager-book"></i> {{ __('voyager::compass.resources.title') }}</a></li>
+          <li @if($active_tab == 'commands'){!! 'class="active"' !!}@endif><a data-bs-toggle="tab" href="#commands"><i class="voyager-terminal"></i> {{ __('voyager::compass.commands.title') }}</a></li>
+          <li @if($active_tab == 'logs'){!! 'class="active"' !!}@endif><a data-bs-toggle="tab" href="#logs"><i class="voyager-logbook"></i> {{ __('voyager::compass.logs.title') }}</a></li>
         </ul>
 
         <div class="tab-content">
@@ -34,7 +34,7 @@
                 <h3><i class="voyager-book"></i> {{ __('voyager::compass.resources.title') }} <small>{{ __('voyager::compass.resources.text') }}</small></h3>
 
                 <div class="collapsible">
-                    <div class="collapse-head" data-toggle="collapse" data-target="#links" aria-expanded="true" aria-controls="links">
+                    <div class="collapse-head" data-bs-toggle="collapse" data-bs-target="#links" aria-expanded="true" aria-controls="links">
                         <h4>{{ __('voyager::compass.links.title') }}</h4>
                         <i class="voyager-angle-down"></i>
                         <i class="voyager-angle-up"></i>
@@ -57,7 +57,7 @@
 
               <div class="collapsible">
 
-                <div class="collapse-head" data-toggle="collapse" data-target="#fonts" aria-expanded="true" aria-controls="fonts">
+                <div class="collapse-head" data-bs-toggle="collapse" data-bs-target="#fonts" aria-expanded="true" aria-controls="fonts">
                     <h4>{{ __('voyager::compass.fonts.title') }}</h4>
                     <i class="voyager-angle-down"></i>
                     <i class="voyager-angle-up"></i>

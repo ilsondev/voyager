@@ -306,7 +306,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3111111', e
             padding: 3px 7px;
         }
 
-        #logs .level .glyphicon{
+        #logs .level i, #logs .level span{
             float:left;
         }
 

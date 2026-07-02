@@ -3,7 +3,7 @@
     <div v-if="hidden_element" :id="'dd_'+this.uid" class="dd">
         <ol id="files" class="dd-list">
             <li v-for="file in getSelectedFiles()" class="dd-item" :data-url="file">
-                <div class="file_link selected" aria-hidden="true" data-toggle="tooltip" data-placement="auto" :title="file">
+                <div class="file_link selected" aria-hidden="true" data-bs-toggle="tooltip" data-placement="auto" :title="file">
                     <div class="link_icon">
                         <template v-if="fileIs(file, 'image')">
                             <div class="img_icon" :style="imgIcon('{{ Storage::disk(config('voyager.storage.disk'))->url('/') }}'+file)"></div>
@@ -46,7 +46,7 @@
                 <i class="voyager-upload"></i>
                 {{ __('voyager::generic.upload') }}
             </button>
-            <button type="button" class="btn btn-primary" v-if="allowCreateFolder" data-toggle="modal" :data-target="'#create_dir_modal_'+this.uid">
+            <button type="button" class="btn btn-primary" v-if="allowCreateFolder" data-bs-toggle="modal" :data-bs-target="'#create_dir_modal_'+this.uid">
                 <i class="voyager-folder"></i>
                 {{ __('voyager::generic.add_folder') }}
             </button>
@@ -59,15 +59,15 @@
                 <i class="voyager-upload"></i>
                 {{ __('voyager::media.add_all_selected') }}
             </button>
-            <button type="button" v-if="showFolders && allowMove" class="btn btn-default" data-toggle="modal" :data-target="'#move_files_modal_'+this.uid">
+            <button type="button" v-if="showFolders && allowMove" class="btn btn-default" data-bs-toggle="modal" :data-bs-target="'#move_files_modal_'+this.uid">
                 <i class="voyager-move"></i>
                 {{ __('voyager::generic.move') }}
             </button>
-            <button type="button" v-if="allowDelete" :disabled="selected_files.length == 0" class="btn btn-default" data-toggle="modal" :data-target="'#confirm_delete_modal_'+this.uid">
+            <button type="button" v-if="allowDelete" :disabled="selected_files.length == 0" class="btn btn-default" data-bs-toggle="modal" :data-bs-target="'#confirm_delete_modal_'+this.uid">
                 <i class="voyager-trash"></i>
                 {{ __('voyager::generic.delete') }}
             </button>
-            <button v-if="allowCrop" :disabled="selected_files.length != 1 || !fileIs(selected_file, 'image')" type="button" class="btn btn-default" data-toggle="modal" :data-target="'#crop_modal_'+this.uid">
+            <button v-if="allowCrop" :disabled="selected_files.length != 1 || !fileIs(selected_file, 'image')" type="button" class="btn btn-default" data-bs-toggle="modal" :data-bs-target="'#crop_modal_'+this.uid">
                 <i class="voyager-crop"></i>
                 {{ __('voyager::media.crop') }}
             </button>
@@ -229,7 +229,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <img :src="selected_file.path" class="img img-responsive" style="margin: 0 auto;">
@@ -249,7 +249,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title"><i class="voyager-folder"></i> {{ __('voyager::media.add_new_folder') }}</h4>
                 </div>
 
@@ -258,7 +258,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                     <button type="button" class="btn btn-info" v-on:click="createFolder">{{ __('voyager::media.create_new_folder') }}
                     </button>
                 </div>
@@ -272,7 +272,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title"><i class="voyager-warning"></i> {{ __('voyager::generic.are_you_sure') }}</h4>
                 </div>
 
@@ -287,7 +287,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                     <button type="button" class="btn btn-danger" v-on:click="deleteFiles">{{ __('voyager::generic.delete_confirm') }}
                     </button>
                 </div>
@@ -301,8 +301,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"
-                            aria-hidden="true">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title"><i class="voyager-move"></i> {{ __('voyager::media.move_file_folder') }}</h4>
                 </div>
 
@@ -316,7 +315,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                     <button type="button" class="btn btn-warning" v-on:click="moveFiles">{{ __('voyager::generic.move') }}</button>
                 </div>
             </div>
@@ -330,7 +329,7 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title">{{ __('voyager::media.crop_image') }}</h4>
                 </div>
 
@@ -344,7 +343,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                     <button type="button" class="btn btn-warning" v-on:click="crop(false)">{{ __('voyager::media.crop') }}</button>
                     <button type="button" class="btn btn-warning" v-on:click="crop(true)">{{ __('voyager::media.crop_and_create') }}</button>
                 </div>

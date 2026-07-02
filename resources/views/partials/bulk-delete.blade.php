@@ -5,8 +5,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <h4 class="modal-title">
                     <i class="voyager-trash"></i> {{ __('voyager::generic.are_you_sure_delete') }} <span id="bulk_delete_count"></span> <span id="bulk_delete_display_name"></span>?
                 </h4>
@@ -18,10 +17,10 @@
                     {{ method_field("DELETE") }}
                     {{ csrf_field() }}
                     <input type="hidden" name="ids" id="bulk_delete_input" value="">
-                    <input type="submit" class="btn btn-danger pull-right delete-confirm"
+                    <input type="submit" class="btn btn-danger float-end delete-confirm"
                              value="{{ __('voyager::generic.bulk_delete_confirm') }} {{ strtolower($dataType->getTranslatedAttribute('display_name_plural')) }}">
                 </form>
-                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">
+                <button type="button" class="btn btn-default float-end" data-bs-dismiss="modal">
                     {{ __('voyager::generic.cancel') }}
                 </button>
             </div>
