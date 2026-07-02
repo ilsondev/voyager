@@ -3,7 +3,7 @@
 namespace TCG\Voyager\Tests;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
-use Orchestra\Testbench\BrowserKit\TestCase as OrchestraTestCase;
+use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use TCG\Voyager\Models\User;
 use TCG\Voyager\VoyagerServiceProvider;
 
@@ -104,42 +104,5 @@ class TestCase extends OrchestraTestCase
     public function disableExceptionHandling()
     {
         $this->app->instance(ExceptionHandler::class, new DisabledTestException());
-    }
-
-    /**
-     * Visit the given URI with a GET request.
-     *
-     * @param string $uri
-     *
-     * @return $this
-     */
-    public function visit($uri)
-    {
-        if (is_callable('parent::visit')) {
-            return parent::visit($uri);
-        }
-
-        return $this->get($uri);
-    }
-
-    /**
-     * Assert that a given string is seen on the current HTML.
-     *
-     * @param string $text
-     * @param bool   $negate
-     *
-     * @return $this
-     */
-    public function see($text, $negate = false)
-    {
-        if (is_callable('parent::see')) {
-            return parent::see($text);
-        }
-
-        if ($negate) {
-            return $this->assertDontSee($text);
-        }
-
-        return $this->assertSee($text);
     }
 }

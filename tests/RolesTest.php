@@ -29,26 +29,29 @@ class RolesTest extends TestCase
     public function testRoles()
     {
         // Adding a New Role
-        $this->visit(route('voyager.roles.create'))
-             ->type('superadmin', 'name')
-             ->type('Super Admin', 'display_name')
-             ->press(__('voyager::generic.submit'))
-             ->seePageIs(route('voyager.roles.index'))
-             ->seeInDatabase('roles', ['name' => 'superadmin']);
+        $this->post(route('voyager.roles.store'), [
+                 'name'         => 'superadmin',
+                 'display_name' => 'Super Admin',
+             ])
+             ->assertRedirect(route('voyager.roles.index'));
+        $this->assertDatabaseHas('roles', ['name' => 'superadmin']);
 
         // Editing a Role
-        $this->visit(route('voyager.roles.edit', 2))
-             ->type('regular_user', 'name')
-             ->press(__('voyager::generic.submit'))
-             ->seePageIs(route('voyager.roles.index'))
-             ->seeInDatabase('roles', ['name' => 'regular_user']);
+        $role = Role::find(2);
+        $this->put(route('voyager.roles.update', 2), [
+                 'name'         => 'regular_user',
+                 'display_name' => $role->display_name,
+             ])
+             ->assertRedirect(route('voyager.roles.index'));
+        $this->assertDatabaseHas('roles', ['name' => 'regular_user']);
 
         // Editing a Role
-        $this->visit(route('voyager.roles.edit', 2))
-             ->type('user', 'name')
-             ->press(__('voyager::generic.submit'))
-             ->seePageIs(route('voyager.roles.index'))
-             ->seeInDatabase('roles', ['name' => 'user']);
+        $this->put(route('voyager.roles.update', 2), [
+                 'name'         => 'user',
+                 'display_name' => $role->display_name,
+             ])
+             ->assertRedirect(route('voyager.roles.index'));
+        $this->assertDatabaseHas('roles', ['name' => 'user']);
 
         // Get the current super admin role
         $superadmin_role = Role::where('name', '=', 'superadmin')->first();
@@ -56,7 +59,7 @@ class RolesTest extends TestCase
         // Deleting a Role
         $response = $this->call('DELETE', route('voyager.roles.destroy', $superadmin_role->id), ['_token' => csrf_token()]);
         $this->assertEquals(302, $response->getStatusCode());
-        $this->notSeeInDatabase('roles', ['name' => 'superadmin']);
+        $this->assertDatabaseMissing('roles', ['name' => 'superadmin']);
     }
 
     /**
@@ -66,13 +69,28 @@ class RolesTest extends TestCase
      */
     public function testEditRolePermissions()
     {
-        $this->notSeeInDatabase('permission_role', ['permission_id' => $this->permission_id, 'role_id' => 2]);
-        Role::find(2)->permissions()->attach($this->permission_id);
+        $this->assertDatabaseMissing('permission_role', ['permission_id' => $this->permission_id, 'role_id' => 2]);
 
-        $this->visit(route('voyager.roles.edit', 2))
-             ->uncheck('permissions['.$this->permission_id.']')
-             ->press(__('voyager::generic.submit'))
-             ->seePageIs(route('voyager.roles.index'))
-             ->notSeeInDatabase('permission_role', ['permission_id' => $this->permission_id, 'role_id' => 2]);
+        $role = Role::find(2);
+        $role->permissions()->attach($this->permission_id);
+        $this->assertDatabaseHas('permission_role', ['permission_id' => $this->permission_id, 'role_id' => 2]);
+
+        // Submitting the edit form with the permission unchecked means it is
+        // simply absent from the posted `permissions` array; the controller
+        // syncs to whatever is submitted, dropping the missing permission.
+        $permissions = $role->permissions()
+            ->pluck('permissions.id')
+            ->reject(fn ($id) => $id == $this->permission_id)
+            ->values()
+            ->all();
+
+        $this->put(route('voyager.roles.update', 2), [
+                 'name'         => $role->name,
+                 'display_name' => $role->display_name,
+                 'permissions'  => $permissions,
+             ])
+             ->assertRedirect(route('voyager.roles.index'));
+
+        $this->assertDatabaseMissing('permission_role', ['permission_id' => $this->permission_id, 'role_id' => 2]);
     }
 }

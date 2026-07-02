@@ -22,7 +22,7 @@ jobs:
       - name: Select PHP version
         uses: shivammathur/setup-php@master
         with:
-          php-version: '8.2'
+          php-version: '8.3'
           extensions: mbstring, pdo_sqlite, fileinfo, gd
           coverage: pcov
 
@@ -33,7 +33,7 @@ jobs:
 
       # Install PHP dependencies
       - name: Install Composer dependencies
-        run: composer require "illuminate/support:11.*" --no-ansi
+        run: composer install --no-interaction --prefer-dist --no-ansi
 
       # Install NPM dependencies
       - name: Install Dependencies

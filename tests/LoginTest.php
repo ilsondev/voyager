@@ -8,60 +8,74 @@ class LoginTest extends TestCase
 {
     public function testSuccessfulLoginWithDefaultCredentials()
     {
-        $this->visit(route('voyager.login'))
-             ->type('admin@admin.com', 'email')
-             ->type('password', 'password')
-             ->press(__('voyager::generic.login'))
-             ->seePageIs(route('voyager.dashboard'));
+        $response = $this->post(route('voyager.postlogin'), [
+            'email'    => 'admin@admin.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect(route('voyager.dashboard'));
+        $this->assertTrue(Auth::guard(app('VoyagerGuard'))->check());
     }
 
     public function testShowAnErrorMessageWhenITryToLoginWithWrongCredentials()
     {
         session()->setPreviousUrl(route('voyager.login'));
 
-        $this->visit(route('voyager.login'))
-             ->type('john@Doe.com', 'email')
-             ->type('pass', 'password')
-             ->press(__('voyager::generic.login'))
-             ->seePageIs(route('voyager.login'))
-             ->see(__('auth.failed'))
-             ->seeInField('email', 'john@Doe.com');
+        $response = $this->post(route('voyager.postlogin'), [
+            'email'    => 'john@Doe.com',
+            'password' => 'pass',
+        ]);
+
+        $response->assertRedirect(route('voyager.login'));
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest(app('VoyagerGuard'));
+
+        // The failed-login error message and the old input are flashed back so
+        // the login form can re-render them.
+        $this->assertEquals(__('auth.failed'), session('errors')->first('email'));
+        $this->assertEquals('john@Doe.com', old('email'));
     }
 
     public function testRedirectIfLoggedIn()
     {
         Auth::loginUsingId(1);
 
-        $this->visit(route('voyager.login'))
-             ->seePageIs(route('voyager.dashboard'));
+        $this->get(route('voyager.login'))
+             ->assertRedirect(route('voyager.dashboard'));
     }
 
     public function testRedirectIfNotLoggedIn()
     {
-        $this->visit(route('voyager.profile'))
-             ->seePageIs(route('voyager.login'));
+        $this->get(route('voyager.profile'))
+             ->assertRedirect(route('voyager.login'));
     }
 
     public function testCanLogout()
     {
         Auth::loginUsingId(1);
 
-        $this->visit(route('voyager.dashboard'))
-             ->press(__('voyager::generic.logout'))
-             ->seePageIs(route('voyager.login'));
+        $this->post(route('voyager.logout'))
+             ->assertRedirect(route('voyager.login'));
+
+        $this->assertGuest(app('VoyagerGuard'));
     }
 
     public function testGetsLockedOutAfterFiveAttempts()
     {
         session()->setPreviousUrl(route('voyager.login'));
 
+        $response = null;
         for ($i = 0; $i <= 6; $i++) {
-            $t = $this->visit(route('voyager.login'))
-                 ->type('john@Doe.com', 'email')
-                 ->type('pass', 'password')
-                 ->press(__('voyager::generic.login'));
+            $response = $this->post(route('voyager.postlogin'), [
+                'email'    => 'john@Doe.com',
+                'password' => 'pass',
+            ]);
         }
 
-        $t->see('Too many login attempts. Please try again in');
+        $response->assertSessionHasErrors('email');
+        $this->assertStringContainsString(
+            'Too many login attempts. Please try again in',
+            session('errors')->first('email')
+        );
     }
 }

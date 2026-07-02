@@ -2,14 +2,9 @@
 
 namespace TCG\Voyager\Database\Types\Common;
 
-use Doctrine\DBAL\Types\DecimalType as DoctrineDecimalType;
+use TCG\Voyager\Database\Types\Type;
 
-class NumericType extends DoctrineDecimalType
+class NumericType extends Type
 {
     public const NAME = 'numeric';
-
-    public function getName()
-    {
-        return static::NAME;
-    }
 }

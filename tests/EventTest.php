@@ -223,8 +223,6 @@ class EventTest extends TestCase
 
     public function testTableAddedEvent()
     {
-        $this->markTestSkipped('Skipping this test as Doctrine DBAL is not supported in Laravel 11');
-
         Event::fake();
         Auth::loginUsingId(1);
 
@@ -250,8 +248,6 @@ class EventTest extends TestCase
 
     public function testTableUpdatedEvent()
     {
-        $this->markTestSkipped('Skipping this test as Doctrine DBAL is not supported in Laravel 11');
-
         Event::fake();
         Auth::loginUsingId(1);
 
@@ -298,8 +294,6 @@ class EventTest extends TestCase
 
     public function testTableDeletedEvent()
     {
-        $this->markTestSkipped('Skipping this test as Doctrine DBAL is not supported in Laravel 11');
-
         Event::fake();
         Auth::loginUsingId(1);
 

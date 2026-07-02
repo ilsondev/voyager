@@ -17,26 +17,35 @@ class MenuTest extends TestCase
     public function testCanRenameMenu()
     {
         $menu = Menu::where('name', '=', 'admin')->first();
-        $this->visitRoute('voyager.menus.edit', $menu->id)
-             ->seeInField('name', $menu->name)
-             ->type('new_admin', 'name')
-             ->seeInElement('button', __('voyager::generic.save'))
-             ->press(__('voyager::generic.save'))
-             ->seePageIs(route('voyager.menus.index'))
-             ->seeInDatabase('menus', [
-                 'id'   => $menu->id,
+
+        // The edit page shows the current menu name and a save button.
+        $this->get(route('voyager.menus.edit', $menu->id))
+             ->assertSee($menu->name)
+             ->assertSee(__('voyager::generic.save'));
+
+        $this->put(route('voyager.menus.update', $menu->id), [
                  'name' => 'new_admin',
-             ]);
+             ])
+             ->assertRedirect(route('voyager.menus.index'));
+
+        $this->assertDatabaseHas('menus', [
+            'id'   => $menu->id,
+            'name' => 'new_admin',
+        ]);
     }
 
     public function testCanDeleteMenuItem()
     {
         $menu = Menu::where('name', '=', 'admin')->first();
+        $itemId = $menu->items->first()->id;
+
         $this->delete(route('voyager.menus.item.destroy', [
             'menu' => $menu->id,
-            'id'   => $menu->items->first()->id,
-        ]))->notSeeInDatabase('menu_items', [
-            'id' => $menu->items->first()->id,
+            'id'   => $itemId,
+        ]));
+
+        $this->assertDatabaseMissing('menu_items', [
+            'id' => $itemId,
         ]);
     }
 
@@ -51,7 +60,9 @@ class MenuTest extends TestCase
             'title'   => 'Title',
             'url'     => '#',
             'target'  => '_self',
-        ]))->seeInDatabase('menu_items', [
+        ]));
+
+        $this->assertDatabaseHas('menu_items', [
             'menu_id' => $menu->id,
             'title'   => 'Title',
         ]);
@@ -69,7 +80,9 @@ class MenuTest extends TestCase
             'title'   => 'New Title',
             'url'     => '#',
             'target'  => '_self',
-        ]))->seeInDatabase('menu_items', [
+        ]));
+
+        $this->assertDatabaseHas('menu_items', [
             'menu_id' => $menu->id,
             'id'      => $item->id,
             'title'   => 'New Title',
@@ -80,7 +93,7 @@ class MenuTest extends TestCase
     {
         $menu = Menu::where('name', '=', 'admin')->first();
         $response = $this->post('http://localhost/admin/menus/1/order', ['order' => '[{"id":4},{"id":1},{"id":3},{"id":2},{"id":5,"children":[{"id":6},{"id":7},{"id":8},{"id":9},{"id":11}]},{"id":10},{"id":12}]']);
-        $this->assertEquals(200, $response->response->status());
+        $this->assertEquals(200, $response->status());
     }
 
     public function testCanSeeMenuBuilder()

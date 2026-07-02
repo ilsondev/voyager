@@ -2,6 +2,8 @@
 
 namespace TCG\Voyager\Tests;
 
+use Illuminate\Support\Facades\Auth;
+
 class RouteTest extends TestCase
 {
     /**
@@ -13,10 +15,7 @@ class RouteTest extends TestCase
     {
         $this->disableExceptionHandling();
 
-        $this->visit(route('voyager.login'));
-        $this->type('admin@admin.com', 'email');
-        $this->type('password', 'password');
-        $this->press(__('voyager::generic.login'));
+        Auth::loginUsingId(1);
 
         $urls = [
             route('voyager.dashboard'),
@@ -47,10 +46,11 @@ class RouteTest extends TestCase
             route('voyager.menus.show', 1),
             route('voyager.menus.edit', 1),
             route('voyager.bread.edit', 'categories'),
-            // Disabled as Doctrine DBAL is not supported in Laravel 11
-            // route('voyager.database.index'),
-            // route('voyager.database.edit', 'categories'),
-            // route('voyager.database.create'),
+            // Re-enabled in Phase 2: the Database Manager now works on the
+            // native (Doctrine-free) schema layer.
+            route('voyager.database.index'),
+            route('voyager.database.edit', 'categories'),
+            route('voyager.database.create'),
         ];
 
         foreach ($urls as $url) {

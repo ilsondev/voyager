@@ -2,10 +2,9 @@
 
 namespace TCG\Voyager\Database\Types\Postgresql;
 
-use TCG\Voyager\Database\Types\Common\DoubleType;
+use TCG\Voyager\Database\Types\Type;
 
-class DoublePrecisionType extends DoubleType
+class DoublePrecisionType extends Type
 {
     public const NAME = 'double precision';
-    public const DBTYPE = 'float8';
 }

@@ -2,14 +2,9 @@
 
 namespace TCG\Voyager\Database\Types\Common;
 
-use Doctrine\DBAL\Types\FloatType as DoctrineFloatType;
+use TCG\Voyager\Database\Types\Type;
 
-class DoubleType extends DoctrineFloatType
+class DoubleType extends Type
 {
     public const NAME = 'double';
-
-    public function getName()
-    {
-        return static::NAME;
-    }
 }

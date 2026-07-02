@@ -29,12 +29,9 @@ View the Voyager Cheat Sheet: https://voyager-cheatsheet.ulties.com/
 
 <hr>
 
-Laravel Admin & BREAD System (Browse, Read, Edit, Add, & Delete), supporting Laravel 11 and newer!
+Laravel Admin & BREAD System (Browse, Read, Edit, Add, & Delete), supporting Laravel 13 and newer!
 
 ## Installation Steps
-
-> [!WARNING]
-> As of Laravel 11 the Doctrine DBAL package has been removed from Laravel. This currently breaks the Voyager Database Manager. We are working on a fix for this, but in the meantime, you can just use the Laravel Database migrations to manage your database instead.
 
 ### 1. Require the Package
 

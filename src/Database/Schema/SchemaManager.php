@@ -5,7 +5,6 @@ namespace TCG\Voyager\Database\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Collection;
 
 abstract class SchemaManager
 {
@@ -49,7 +48,18 @@ abstract class SchemaManager
     {
         $columns = Schema::getColumnListing($tableName);
         $columnDetails = collect($columns)->mapWithKeys(function ($column) use ($tableName) {
-            return [$column => static::getColumnDetails($tableName, $column)];
+            $details = static::getColumnDetails($tableName, $column);
+
+            // Translate the flat introspection shape into the array shape
+            // consumed by Column::make (used by the Table value object).
+            return [$column => [
+                'name'          => $column,
+                'type'          => ['name' => $details['type']],
+                'notnull'       => (bool) $details['nullable'],
+                'default'       => $details['default'],
+                'autoincrement' => (bool) $details['auto_increment'],
+                'length'        => $details['length'] ?? null,
+            ]];
         });
 
         $indexes = static::getTableIndexes($tableName);
@@ -73,7 +83,12 @@ abstract class SchemaManager
             return [
                 'field' => $column,
                 'type' => $columnDetails['type'],
-                'null' => $columnDetails['nullable'],
+                // Mirrors MySQL's DESCRIBE output ("YES"/"NO"), which callers
+                // (BREAD edit-add view, the database-manager "Show Table Info"
+                // modal, Column::make()) compare against as a string, not a
+                // boolean. $columnDetails['nullable'] is actually "not
+                // nullable" (see getColumnDetails() below).
+                'null' => $columnDetails['nullable'] ? 'NO' : 'YES',
                 'key' => !empty($indexes) ? substr($indexes[0]['type'], 0, 3) : null,
                 'default' => $columnDetails['default'],
                 'extra' => $columnDetails['auto_increment'] ? 'auto_increment' : '',
@@ -87,23 +102,81 @@ abstract class SchemaManager
         return Schema::getColumnListing($tableName);
     }
 
+    /**
+     * Create a table from a Voyager Table value object (or an array/JSON
+     * describing one). Uses Laravel's native Blueprint instead of Doctrine.
+     *
+     * @param Table|array|string $table
+     *
+     * @return void
+     */
     public static function createTable($table)
     {
-        if ($table instanceof Blueprint) {
-            Schema::create($table->getTable(), function (Blueprint $blueprint) use ($table) {
-                foreach ($table->getColumns() as $column) {
-                    $blueprint->addColumn(
-                        $column->getType()->getName(),
-                        $column->getName(),
-                        $column->toArray()
-                    );
-                }
-            });
-        } else {
-            throw new \InvalidArgumentException('Table must be an instance of Blueprint');
+        if (!$table instanceof Table) {
+            $table = Table::make($table);
         }
+
+        if (static::tableExists($table->getName())) {
+            throw new \RuntimeException("table {$table->getName()} already exists");
+        }
+
+        Schema::create($table->getName(), function (Blueprint $blueprint) use ($table) {
+            $autoIncrementColumns = [];
+
+            foreach ($table->getColumns() as $column) {
+                SchemaBuilder::applyColumn($blueprint, $column);
+
+                if ($column->getAutoIncrement()) {
+                    $autoIncrementColumns[] = $column->getName();
+                }
+            }
+
+            foreach ($table->getIndexes() as $index) {
+                // An auto-increment column is already the primary key in every
+                // engine's grammar; adding an explicit primary index on top of
+                // it would create a duplicate primary key.
+                if ($index->isPrimary()
+                    && !array_diff($index->getColumns(), $autoIncrementColumns)
+                    && !empty($autoIncrementColumns)) {
+                    continue;
+                }
+
+                SchemaBuilder::applyIndex($blueprint, $index);
+            }
+        });
     }
 
+    /**
+     * Drop a table if it exists.
+     *
+     * @param string $table
+     *
+     * @return void
+     */
+    public static function dropTable($table)
+    {
+        Schema::dropIfExists($table);
+    }
+
+    /**
+     * Rename a table.
+     *
+     * @param string $from
+     * @param string $to
+     *
+     * @return void
+     */
+    public static function renameTable($from, $to)
+    {
+        Schema::rename($from, $to);
+    }
+
+    /**
+     * Note: despite the key name, 'nullable' here actually means "not
+     * nullable" (it's the inverted native flag) - this feeds Table/Column's
+     * `notnull` property directly. Callers that need the native YES/NO
+     * DESCRIBE-style semantics (e.g. describeTable()) must invert it back.
+     */
     protected static function getColumnDetails($table, $column)
     {
         $schema = Schema::getConnection()->getSchemaBuilder();
@@ -119,9 +192,55 @@ abstract class SchemaManager
         return [
             'type' => $columnType,
             'nullable' => !($columnInfo['nullable'] ?? false),
-            'default' => $columnInfo['default'] ?? null,
+            'default' => static::normaliseDefault($columnInfo['default'] ?? null),
             'auto_increment' => ($columnInfo['auto_increment'] ?? false),
+            'length' => static::parseLength($columnInfo['type'] ?? ''),
         ];
+    }
+
+    /**
+     * Extract a length/precision from a full SQL type string, e.g.
+     * "varchar(255)" => 255, "decimal(8,2)" => 8. Returns null when absent.
+     *
+     * @param string $fullType
+     *
+     * @return int|null
+     */
+    protected static function parseLength($fullType)
+    {
+        if (preg_match('/\((\d+)/', (string) $fullType, $m)) {
+            return (int) $m[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * Native schema introspection returns column defaults verbatim from the
+     * engine, which for string defaults means the value is wrapped in quotes
+     * (e.g. SQLite/PostgreSQL: 'value'). Strip a single layer of enclosing
+     * quotes so the UI shows the logical default.
+     *
+     * @param string|null $default
+     *
+     * @return string|null
+     */
+    protected static function normaliseDefault($default)
+    {
+        if (!is_string($default)) {
+            return $default;
+        }
+
+        if (strlen($default) >= 2) {
+            $first = $default[0];
+            $last = $default[strlen($default) - 1];
+
+            if (($first === "'" && $last === "'") || ($first === '"' && $last === '"')) {
+                return substr($default, 1, -1);
+            }
+        }
+
+        return $default;
     }
 
     protected static function getTableIndexes($table)
@@ -144,19 +263,8 @@ abstract class SchemaManager
 
     public static function listTableNames()
     {
-        $connection = Schema::getConnection();
+        $tables = Schema::getConnection()->getSchemaBuilder()->getTables();
 
-        // Check if the connection supports the getTables method
-        if (method_exists($connection->getSchemaBuilder(), 'getTables')) {
-            $tables = $connection->getSchemaBuilder()->getTables();
-            return collect($tables)->pluck('name')->values()->all();
-        }
-
-        // Fallback method if getTables is not available
-        $tables = $connection->getDoctrineSchemaManager()->listTableNames();
-
-        // Filter out tables that should be excluded (like migrations)
-        $excludedTables = ['migrations', 'failed_jobs', 'password_resets'];
-        return array_values(array_diff($tables, $excludedTables));
+        return collect($tables)->pluck('name')->values()->all();
     }
 }
