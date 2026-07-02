@@ -1,6 +1,6 @@
 {
-  "name": "tcg/voyager",
-  "description": "A Laravel Admin Package for The Control Group to make your life easier and steer your project in the right direction",
+  "name": "ilsondev/voyager",
+  "description": "A maintained, actively-developed fork of Voyager - the Laravel Admin Package. This is an updated version that continues development after the original package was archived.",
   "keywords": [
     "laravel",
     "admin",
@@ -9,13 +9,19 @@
   "license": "MIT",
   "homepage": "https://voyager.devdojo.com/",
   "support": {
-    "issues": "https://github.com/the-control-group/voyager/issues",
-    "source": "https://github.com/the-control-group/voyager"
+    "issues": "https://github.com/ilsondev/voyager/issues",
+    "source": "https://github.com/ilsondev/voyager"
   },
   "authors": [
     {
+      "name": "Ilson Nóbrega",
+      "email": "hello@ilson.dev",
+      "role": "Maintainer"
+    },
+    {
       "name": "Tony Lea",
-      "email": "tony.lea@thecontrolgroup.com"
+      "email": "tony.lea@thecontrolgroup.com",
+      "role": "Original author"
     }
   ],
   "require": {

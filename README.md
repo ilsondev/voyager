@@ -1,5 +1,8 @@
 <p align="center"><a href="https://voyager.devdojo.com" target="_blank"><img width="400" src="https://s3.amazonaws.com/thecontrolgroup/voyager.png"></a></p>
 
+> [!Note]
+> **This is a maintained, actively-developed fork of Voyager.** The [original Voyager package](https://github.com/the-control-group/voyager) has been archived by The Control Group and no longer receives updates. This fork continues development to keep Voyager compatible with modern Laravel versions and to keep it actively supported.
+
 > Voyager is built with Vue and Bootstrap. If you are looking for a Laravel Starter Kit built that uses Livewire and Tailwind, you may be interested in checking out [Genesis](https://github.com/thedevdojo/genesis)
 
 <p align="center"><a href="https://github.com/thedevdojo/genesis" target="_blank"><img src="https://github.com/thedevdojo/voyager/assets/601261/6ffa6ac4-ea1e-4c8a-8360-b347377b8201" height="auto" width="100%"></a></p>
@@ -26,13 +29,7 @@ View the Voyager Cheat Sheet: https://voyager-cheatsheet.ulties.com/
 
 <hr>
 
-Laravel Admin & BREAD System (Browse, Read, Edit, Add, & Delete), supporting Laravel 8 and newer!
-
-> Want to use Laravel 6 or 7? Use [Voyager 1.5](https://github.com/the-control-group/voyager/tree/1.5)
-
-> Want to use Laravel 8 or 9? Use [Voyager 1.6](https://github.com/the-control-group/voyager/tree/1.6)
-
-> Want to use Laravel 10? Use [Voyager 1.7](https://github.com/the-control-group/voyager/tree/1.7)
+Laravel Admin & BREAD System (Browse, Read, Edit, Add, & Delete), supporting Laravel 11 and newer!
 
 ## Installation Steps
 
@@ -44,13 +41,7 @@ Laravel Admin & BREAD System (Browse, Read, Edit, Add, & Delete), supporting Lar
 After creating your new Laravel application you can include the Voyager package with the following command:
 
 ```bash
-composer require tcg/voyager
-```
-
-> If you are installing this on Laravel 10, we are working on getting a permanent release available; however, you can still use this with Larvel 10 by requiring the following:
-
-```bash
-composer require tcg/voyager dev-1.6-l10
+composer require ilsondev/voyager
 ```
 
 ### 2. Add the DB Credentials & APP_URL
