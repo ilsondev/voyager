@@ -44,15 +44,15 @@
 <div class="container-fluid">
     <div class="row">
         <div class="faded-bg animated"></div>
-        <div class="hidden-xs col-sm-7 col-md-8">
+        <div class="d-none d-sm-block col-sm-7 col-md-8">
             <div class="clearfix">
                 <div class="col-sm-12 col-md-10 col-md-offset-2">
                     <div class="logo-title-container">
                         <?php $admin_logo_img = Voyager::setting('admin.icon_image', ''); ?>
                         @if($admin_logo_img == '')
-                            <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn" src="{{ voyager_asset('images/logo-icon-light.png') }}" alt="Logo Icon">
+                            <img class="img-responsive float-start flip logo d-none d-sm-block animated fadeIn" src="{{ voyager_asset('images/logo-icon-light.png') }}" alt="Logo Icon">
                         @else
-                            <img class="img-responsive pull-left flip logo hidden-xs animated fadeIn" src="{{ Voyager::image($admin_logo_img) }}" alt="Logo Icon">
+                            <img class="img-responsive float-start flip logo d-none d-sm-block animated fadeIn" src="{{ Voyager::image($admin_logo_img) }}" alt="Logo Icon">
                         @endif
                         <div class="copy animated fadeIn">
                             <h1>{{ Voyager::setting('admin.title', 'Voyager') }}</h1>
@@ -63,7 +63,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col-sm-5 col-md-4 login-sidebar">
+        <div class="col-12 col-sm-5 col-md-4 login-sidebar">
 
            @yield('content')
 

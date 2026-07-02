@@ -1,11 +1,11 @@
-<nav class="navbar navbar-default navbar-fixed-top navbar-top">
+<nav class="navbar fixed-top navbar-top">
     <div class="container-fluid">
-        <div class="navbar-header">
+        <div class="navbar-header d-flex align-items-center">
             <button class="hamburger btn-link">
                 <span class="hamburger-inner"></span>
             </button>
             @section('breadcrumbs')
-            <ol class="breadcrumb hidden-xs">
+            <ol class="breadcrumb d-none d-sm-block">
                 @php
                 $segments = array_filter(explode('/', str_replace(route('voyager.dashboard'), '', Request::url())));
                 $url = route('voyager.dashboard');
@@ -32,9 +32,9 @@
             </ol>
             @show
         </div>
-        <ul class="nav navbar-nav @if (__('voyager::generic.is_rtl') == 'true') navbar-left @else navbar-right @endif">
+        <ul class="nav navbar-nav @if (__('voyager::generic.is_rtl') == 'true') me-auto @else ms-auto @endif">
             <li class="dropdown profile">
-                <a href="#" class="dropdown-toggle text-right" data-toggle="dropdown" role="button"
+                <a href="#" class="dropdown-toggle text-right" data-bs-toggle="dropdown" role="button"
                    aria-expanded="false"><img src="{{ $user_avatar }}" class="profile-img"> <span
                             class="caret"></span></a>
                 <ul class="dropdown-menu dropdown-menu-animated">

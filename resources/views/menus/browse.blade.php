@@ -20,8 +20,8 @@
         @include('voyager::alerts')
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-bordered">
-                    <div class="panel-body">
+                <div class="card panel-bordered">
+                    <div class="card-body">
                         <table id="dataTable" class="table table-hover">
                             <thead>
                             <tr>
@@ -45,17 +45,17 @@
                                     @endforeach
                                     <td class="no-sort no-click bread-actions">
                                         @can('delete', $data)
-                                            <div class="btn btn-sm btn-danger pull-right delete" data-id="{{ $data->{$data->getKeyName()} }}">
+                                            <div class="btn btn-sm btn-danger float-end delete" data-id="{{ $data->{$data->getKeyName()} }}">
                                                 <i class="voyager-trash"></i> {{ __('voyager::generic.delete') }}
                                             </div>
                                         @endcan
                                         @can('edit', $data)
-                                            <a href="{{ route('voyager.'.$dataType->slug.'.edit', $data->{$data->getKeyName()}) }}" class="btn btn-sm btn-primary pull-right edit">
+                                            <a href="{{ route('voyager.'.$dataType->slug.'.edit', $data->{$data->getKeyName()}) }}" class="btn btn-sm btn-primary float-end edit">
                                                 <i class="voyager-edit"></i> {{ __('voyager::generic.edit') }}
                                             </a>
                                         @endcan
                                         @can('edit', $data)
-                                            <a href="{{ route('voyager.'.$dataType->slug.'.builder', $data->{$data->getKeyName()}) }}" class="btn btn-sm btn-success pull-right">
+                                            <a href="{{ route('voyager.'.$dataType->slug.'.builder', $data->{$data->getKeyName()}) }}" class="btn btn-sm btn-success float-end">
                                                 <i class="voyager-list"></i> {{ __('voyager::generic.builder') }}
                                             </a>
                                         @endcan
@@ -74,9 +74,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('voyager::generic.close') }}">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     <h4 class="modal-title">
                         <i class="voyager-trash"></i> {{ __('voyager::generic.delete_question') }} {{ $dataType->getTranslatedAttribute('display_name_singular') }}?
                     </h4>
@@ -85,9 +83,9 @@
                     <form action="#" id="delete_form" method="POST">
                         {{ method_field("DELETE") }}
                         {{ csrf_field() }}
-                        <input type="submit" class="btn btn-danger pull-right delete-confirm" value="{{ __('voyager::generic.delete_this_confirm') }} {{ $dataType->getTranslatedAttribute('display_name_singular') }}">
+                        <input type="submit" class="btn btn-danger float-end delete-confirm" value="{{ __('voyager::generic.delete_this_confirm') }} {{ $dataType->getTranslatedAttribute('display_name_singular') }}">
                     </form>
-                    <button type="button" class="btn btn-default pull-right" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default float-end" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                 </div>
             </div>
         </div>
