@@ -80,6 +80,28 @@ class DatabaseTest extends TestCase
         SchemaManager::createTable($this->table);
     }
 
+    /**
+     * describeTable() mirrors MySQL's DESCRIBE output: the 'null' field must
+     * be the string "YES"/"NO", not a boolean. Consumers compare it as a
+     * string (BREAD edit-add view's required-field detection, Column::make(),
+     * the database-manager "Show Table Info" modal via JSON).
+     */
+    public function test_describe_table_reports_null_as_yes_no_string(): void
+    {
+        $table = new Table('test_table_describe');
+        $table->addColumn('id', 'integer', ['autoincrement' => true, 'notnull' => true]);
+        $table->addColumn('required_field', 'text', ['notnull' => true]);
+        $table->addColumn('optional_field', 'text', ['notnull' => false]);
+        $table->setPrimaryKey(['id'], 'primary');
+
+        SchemaManager::createTable($table->toArray());
+
+        $description = SchemaManager::describeTable('test_table_describe')->keyBy('field');
+
+        $this->assertSame('NO', $description['required_field']['null']);
+        $this->assertSame('YES', $description['optional_field']['null']);
+    }
+
     public function test_can_update_table(): void
     {
         $this->update_table_that_not_exist();

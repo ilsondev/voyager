@@ -83,7 +83,12 @@ abstract class SchemaManager
             return [
                 'field' => $column,
                 'type' => $columnDetails['type'],
-                'null' => $columnDetails['nullable'],
+                // Mirrors MySQL's DESCRIBE output ("YES"/"NO"), which callers
+                // (BREAD edit-add view, the database-manager "Show Table Info"
+                // modal, Column::make()) compare against as a string, not a
+                // boolean. $columnDetails['nullable'] is actually "not
+                // nullable" (see getColumnDetails() below).
+                'null' => $columnDetails['nullable'] ? 'NO' : 'YES',
                 'key' => !empty($indexes) ? substr($indexes[0]['type'], 0, 3) : null,
                 'default' => $columnDetails['default'],
                 'extra' => $columnDetails['auto_increment'] ? 'auto_increment' : '',
@@ -166,6 +171,12 @@ abstract class SchemaManager
         Schema::rename($from, $to);
     }
 
+    /**
+     * Note: despite the key name, 'nullable' here actually means "not
+     * nullable" (it's the inverted native flag) - this feeds Table/Column's
+     * `notnull` property directly. Callers that need the native YES/NO
+     * DESCRIBE-style semantics (e.g. describeTable()) must invert it back.
+     */
     protected static function getColumnDetails($table, $column)
     {
         $schema = Schema::getConnection()->getSchemaBuilder();
