@@ -29,7 +29,7 @@ class ViewEventTest extends TestCase
     {
         // Load view, and test if view works
         $this->get('test')
-            ->see('This is a test');
+            ->assertSee('This is a test');
 
         // Add event on test view
         Voyager::onLoadingView('test', function ($name, array $parameters) {
@@ -56,7 +56,7 @@ class ViewEventTest extends TestCase
 
         // Load view to trigger the event, and see if the new view is used
         $this->get('test')
-            ->see('This is the foo view');
+            ->assertSee('This is the foo view');
     }
 
     public function testOverwritingViewNameAndParameters()
@@ -69,6 +69,6 @@ class ViewEventTest extends TestCase
 
         // Load view to trigger the event, and see if the new view is used
         $this->get('test')
-            ->see('Hello Mark!');
+            ->assertSee('Hello Mark!');
     }
 }
