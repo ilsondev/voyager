@@ -223,12 +223,6 @@ class EventTest extends TestCase
 
     public function testTableAddedEvent()
     {
-        // Phase 2 restored the Database Manager (Doctrine DBAL removed). This
-        // test is still skipped only because EventTest extends the legacy
-        // BrowserKit TestCase, which PHPUnit 12 cannot run; re-enable it once
-        // the suite is migrated off BrowserKit (Phase 3).
-        $this->markTestSkipped('Pending Phase 3 (BrowserKit -> Testbench TestCase migration).');
-
         Event::fake();
         Auth::loginUsingId(1);
 
@@ -254,12 +248,6 @@ class EventTest extends TestCase
 
     public function testTableUpdatedEvent()
     {
-        // Phase 2 restored the Database Manager (Doctrine DBAL removed). This
-        // test is still skipped only because EventTest extends the legacy
-        // BrowserKit TestCase, which PHPUnit 12 cannot run; re-enable it once
-        // the suite is migrated off BrowserKit (Phase 3).
-        $this->markTestSkipped('Pending Phase 3 (BrowserKit -> Testbench TestCase migration).');
-
         Event::fake();
         Auth::loginUsingId(1);
 
@@ -306,12 +294,6 @@ class EventTest extends TestCase
 
     public function testTableDeletedEvent()
     {
-        // Phase 2 restored the Database Manager (Doctrine DBAL removed). This
-        // test is still skipped only because EventTest extends the legacy
-        // BrowserKit TestCase, which PHPUnit 12 cannot run; re-enable it once
-        // the suite is migrated off BrowserKit (Phase 3).
-        $this->markTestSkipped('Pending Phase 3 (BrowserKit -> Testbench TestCase migration).');
-
         Event::fake();
         Auth::loginUsingId(1);
 
