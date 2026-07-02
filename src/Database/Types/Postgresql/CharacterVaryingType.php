@@ -2,10 +2,9 @@
 
 namespace TCG\Voyager\Database\Types\Postgresql;
 
-use TCG\Voyager\Database\Types\Common\VarCharType;
+use TCG\Voyager\Database\Types\Type;
 
-class CharacterVaryingType extends VarCharType
+class CharacterVaryingType extends Type
 {
     public const NAME = 'character varying';
-    public const DBTYPE = 'varchar';
 }

@@ -2,36 +2,79 @@
 
 namespace TCG\Voyager\Database\Types;
 
-use Doctrine\DBAL\Platforms\AbstractPlatform as DoctrineAbstractPlatform;
-use Doctrine\DBAL\Types\Type as DoctrineType;
 use TCG\Voyager\Database\Platforms\Platform;
 use TCG\Voyager\Database\Schema\SchemaManager;
 
-abstract class Type extends DoctrineType
+/**
+ * Base class for Voyager's database "types".
+ *
+ * Historically this extended Doctrine DBAL's Type class. Laravel removed the
+ * built-in Doctrine DBAL integration in Laravel 11, so this is now a plain
+ * value object whose sole responsibilities are:
+ *   - exposing a canonical type NAME (used to build the column-type dropdown
+ *     in the database manager UI, and to map to Laravel Blueprint column types);
+ *   - carrying UI metadata ("custom options") such as the category the type
+ *     belongs to, whether it is supported, whether it can be indexed, etc.
+ *
+ * The old getSQLDeclaration()/Doctrine platform hooks are gone: schema
+ * creation and alteration are now performed through Laravel's Blueprint /
+ * native Schema builder instead of Doctrine's SQL generation.
+ */
+abstract class Type
 {
     protected static $customTypesRegistered = false;
-    protected static $platformTypeMapping = [];
-    protected static $allTypes = [];
     protected static $platformTypes = [];
     protected static $customTypeOptions = [];
+    protected static $allTypes = [];
     protected static $typeCategories = [];
+
+    /**
+     * Registered types for the current platform, keyed by their NAME.
+     *
+     * @var array<string, string> map of type name => fully-qualified class name
+     */
     protected static $registeredTypes = [];
 
     public const NAME = 'UNDEFINED_TYPE_NAME';
     public const NOT_SUPPORTED = 'notSupported';
     public const NOT_SUPPORT_INDEX = 'notSupportIndex';
 
-    // todo: make sure this is not overwrting DoctrineType properties
+    /**
+     * Per-instance UI options (category, default input config, etc.).
+     *
+     * @var array
+     */
+    public $customOptions = [];
 
-    // Note: length, precision and scale need default values manually
+    /**
+     * The table this type instance is associated with, when known.
+     *
+     * @var string|null
+     */
+    public $tableName;
 
     public function getName()
     {
         return static::NAME;
     }
 
-    public static function toArray(DoctrineType $type)
+    /**
+     * Export a type (instance or already-array) to its array representation.
+     *
+     * @param self|array $type
+     *
+     * @return array
+     */
+    public static function toArray($type)
     {
+        if (is_array($type)) {
+            $name = $type['name'] ?? ($type[static::class] ?? null);
+            $customTypeOptions = $type;
+            unset($customTypeOptions['name']);
+
+            return array_merge(['name' => $name], $customTypeOptions);
+        }
+
         $customTypeOptions = $type->customOptions ?? [];
 
         return array_merge([
@@ -39,6 +82,12 @@ abstract class Type extends DoctrineType
         ], $customTypeOptions);
     }
 
+    /**
+     * Build the list of available types for the current database platform,
+     * grouped by category, ready to be consumed by the database-manager UI.
+     *
+     * @return \Illuminate\Support\Collection
+     */
     public static function getPlatformTypes()
     {
         if (static::$platformTypes) {
@@ -49,37 +98,44 @@ abstract class Type extends DoctrineType
             static::registerCustomPlatformTypes();
         }
 
-        $platform = SchemaManager::getDatabaseConnection()->getDriverName();
+        $platform = ucfirst(SchemaManager::getDatabaseConnection()->getDriverName());
 
-        static::$platformTypes = Platform::getPlatformTypes(
-            $platform,
-            static::getPlatformTypeMapping()
-        );
+        // Collection of type name => class name for every registered type.
+        $typeMapping = collect(static::$registeredTypes);
 
-        static::$platformTypes = static::$platformTypes->map(function ($type) {
-            return static::toArray(new $type());
-        })->groupBy('category');
+        // Let the platform prune the types it doesn't want to expose.
+        $typeMapping = Platform::getPlatformTypes($platform, $typeMapping);
+
+        static::$platformTypes = $typeMapping
+            ->map(function ($typeClass, $name) {
+                $type = new $typeClass();
+                $type->customOptions = static::resolveCustomOptions($name);
+
+                return static::toArray($type);
+            })
+            ->filter(function ($type) {
+                // Only expose types we managed to categorise.
+                return !empty($type['category']);
+            })
+            ->groupBy('category');
 
         return static::$platformTypes;
-    }
-
-    public static function getPlatformTypeMapping(DoctrineAbstractPlatform $platform)
-    {
-        if (static::$platformTypeMapping) {
-            return static::$platformTypeMapping;
-        }
-
-        static::$platformTypeMapping = collect(
-            get_protected_property($platform, 'doctrineTypeMapping')
-        );
-
-        return static::$platformTypeMapping;
     }
 
     public static function registerCustomPlatformTypes($force = false)
     {
         if (static::$customTypesRegistered && !$force) {
             return;
+        }
+
+        // Reset state so a forced re-registration (e.g. switching connection in
+        // tests) starts from a clean slate.
+        if ($force) {
+            static::$platformTypes = [];
+            static::$customTypeOptions = [];
+            static::$allTypes = [];
+            static::$typeCategories = [];
+            static::$registeredTypes = [];
         }
 
         $platform = SchemaManager::getDatabaseConnection()->getDriverName();
@@ -92,8 +148,6 @@ abstract class Type extends DoctrineType
 
         foreach ($customTypes as $type) {
             $name = $type::NAME;
-            // Instead of overriding or adding Doctrine types,
-            // you might want to register these types in your own type registry
             static::registerType($name, $type);
         }
 
@@ -107,15 +161,26 @@ abstract class Type extends DoctrineType
         static::registerCommonCustomTypeOptions();
 
         Platform::registerPlatformCustomTypeOptions($platformName);
+    }
 
-        // Add the custom options to the types
+    /**
+     * Resolve the merged custom options for a given type name.
+     *
+     * @param string $typeName
+     *
+     * @return array
+     */
+    protected static function resolveCustomOptions($typeName)
+    {
+        $options = [];
+
         foreach (static::$customTypeOptions as $option) {
-            foreach ($option['types'] as $type) {
-                if (static::hasType($type)) {
-                    static::getType($type)->customOptions[$option['name']] = $option['value'];
-                }
+            if (in_array($typeName, $option['types'], true)) {
+                $options[$option['name']] = $option['value'];
             }
         }
+
+        return $options;
     }
 
     protected static function getPlatformCustomTypes($platformName)
@@ -146,7 +211,7 @@ abstract class Type extends DoctrineType
                 $searchType = str_replace('*', '', $types);
                 $types = static::getAllTypes()->filter(function ($type) use ($searchType) {
                     return strpos($type, $searchType) !== false;
-                })->toArray();
+                })->values()->toArray();
             } else {
                 $types = [$types];
             }
@@ -328,5 +393,32 @@ abstract class Type extends DoctrineType
     public static function registerType($name, $typeClass)
     {
         static::$registeredTypes[$name] = $typeClass;
+    }
+
+    public static function hasType($name)
+    {
+        return isset(static::$registeredTypes[$name]);
+    }
+
+    /**
+     * Get a fresh instance of a registered type by name, with its UI options
+     * already resolved.
+     *
+     * @param string $name
+     *
+     * @return static
+     */
+    public static function getType($name)
+    {
+        if (!static::hasType($name)) {
+            throw new \InvalidArgumentException("Unknown database type [{$name}].");
+        }
+
+        $class = static::$registeredTypes[$name];
+        /** @var self $type */
+        $type = new $class();
+        $type->customOptions = static::resolveCustomOptions($name);
+
+        return $type;
     }
 }

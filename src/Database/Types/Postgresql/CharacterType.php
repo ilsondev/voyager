@@ -2,10 +2,9 @@
 
 namespace TCG\Voyager\Database\Types\Postgresql;
 
-use TCG\Voyager\Database\Types\Common\CharType;
+use TCG\Voyager\Database\Types\Type;
 
-class CharacterType extends CharType
+class CharacterType extends Type
 {
     public const NAME = 'character';
-    public const DBTYPE = 'bpchar';
 }

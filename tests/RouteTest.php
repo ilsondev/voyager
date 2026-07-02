@@ -47,10 +47,11 @@ class RouteTest extends TestCase
             route('voyager.menus.show', 1),
             route('voyager.menus.edit', 1),
             route('voyager.bread.edit', 'categories'),
-            // Disabled as Doctrine DBAL is not supported in Laravel 11
-            // route('voyager.database.index'),
-            // route('voyager.database.edit', 'categories'),
-            // route('voyager.database.create'),
+            // Re-enabled in Phase 2: the Database Manager now works on the
+            // native (Doctrine-free) schema layer.
+            route('voyager.database.index'),
+            route('voyager.database.edit', 'categories'),
+            route('voyager.database.create'),
         ];
 
         foreach ($urls as $url) {

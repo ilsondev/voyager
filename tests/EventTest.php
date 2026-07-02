@@ -223,7 +223,11 @@ class EventTest extends TestCase
 
     public function testTableAddedEvent()
     {
-        $this->markTestSkipped('Skipping this test as Doctrine DBAL is not supported in Laravel 11');
+        // Phase 2 restored the Database Manager (Doctrine DBAL removed). This
+        // test is still skipped only because EventTest extends the legacy
+        // BrowserKit TestCase, which PHPUnit 12 cannot run; re-enable it once
+        // the suite is migrated off BrowserKit (Phase 3).
+        $this->markTestSkipped('Pending Phase 3 (BrowserKit -> Testbench TestCase migration).');
 
         Event::fake();
         Auth::loginUsingId(1);
@@ -250,7 +254,11 @@ class EventTest extends TestCase
 
     public function testTableUpdatedEvent()
     {
-        $this->markTestSkipped('Skipping this test as Doctrine DBAL is not supported in Laravel 11');
+        // Phase 2 restored the Database Manager (Doctrine DBAL removed). This
+        // test is still skipped only because EventTest extends the legacy
+        // BrowserKit TestCase, which PHPUnit 12 cannot run; re-enable it once
+        // the suite is migrated off BrowserKit (Phase 3).
+        $this->markTestSkipped('Pending Phase 3 (BrowserKit -> Testbench TestCase migration).');
 
         Event::fake();
         Auth::loginUsingId(1);
@@ -298,7 +306,11 @@ class EventTest extends TestCase
 
     public function testTableDeletedEvent()
     {
-        $this->markTestSkipped('Skipping this test as Doctrine DBAL is not supported in Laravel 11');
+        // Phase 2 restored the Database Manager (Doctrine DBAL removed). This
+        // test is still skipped only because EventTest extends the legacy
+        // BrowserKit TestCase, which PHPUnit 12 cannot run; re-enable it once
+        // the suite is migrated off BrowserKit (Phase 3).
+        $this->markTestSkipped('Pending Phase 3 (BrowserKit -> Testbench TestCase migration).');
 
         Event::fake();
         Auth::loginUsingId(1);

@@ -2,13 +2,52 @@
 
 namespace TCG\Voyager\Database\Schema;
 
-use Doctrine\DBAL\Schema\Index as DoctrineIndex;
-
-abstract class Index
+/**
+ * Plain value object describing a table index.
+ *
+ * Replaces the former Doctrine\DBAL\Schema\Index dependency while keeping the
+ * public API (getName/getColumns/isPrimary/isUnique/spansColumns/...) used by
+ * the database manager, its views and the schema updater.
+ */
+class Index
 {
     public const PRIMARY = 'PRIMARY';
     public const UNIQUE = 'UNIQUE';
     public const INDEX = 'INDEX';
+
+    /** @var string */
+    protected $name;
+
+    /** @var array */
+    protected $columns;
+
+    /** @var bool */
+    protected $isUnique;
+
+    /** @var bool */
+    protected $isPrimary;
+
+    /** @var array */
+    protected $flags;
+
+    /** @var array */
+    protected $options;
+
+    public function __construct(
+        string $name,
+        array $columns,
+        bool $isUnique = false,
+        bool $isPrimary = false,
+        array $flags = [],
+        array $options = []
+    ) {
+        $this->name = $name;
+        $this->columns = array_values($columns);
+        $this->isUnique = $isUnique || $isPrimary;
+        $this->isPrimary = $isPrimary;
+        $this->flags = $flags;
+        $this->options = $options;
+    }
 
     public static function make(array $index)
     {
@@ -17,16 +56,15 @@ abstract class Index
             $columns = [$columns];
         }
 
-        if (isset($index['type'])) {
+        if (isset($index['type']) && $index['type'] !== '') {
             $type = $index['type'];
 
             $isPrimary = ($type == static::PRIMARY);
             $isUnique = $isPrimary || ($type == static::UNIQUE);
         } else {
-            $isPrimary = $index['isPrimary'];
-            $isUnique = $index['isUnique'];
+            $isPrimary = (bool) ($index['isPrimary'] ?? false);
+            $isUnique = (bool) ($index['isUnique'] ?? false);
 
-            // Set the type
             if ($isPrimary) {
                 $type = static::PRIMARY;
             } elseif ($isUnique) {
@@ -36,7 +74,6 @@ abstract class Index
             }
         }
 
-        // Set the name
         $name = trim($index['name'] ?? '');
         if (empty($name)) {
             $table = $index['table'] ?? null;
@@ -48,13 +85,63 @@ abstract class Index
         $flags = $index['flags'] ?? [];
         $options = $index['options'] ?? [];
 
-        return new DoctrineIndex($name, $columns, $isUnique, $isPrimary, $flags, $options);
+        return new self($name, $columns, $isUnique, $isPrimary, $flags, $options);
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    public function isPrimary()
+    {
+        return $this->isPrimary;
+    }
+
+    public function isUnique()
+    {
+        return $this->isUnique;
+    }
+
+    public function getFlags()
+    {
+        return $this->flags;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Does this index span exactly the given set of columns?
+     *
+     * @param array $columns
+     *
+     * @return bool
+     */
+    public function spansColumns(array $columns)
+    {
+        $sameColumns = count($this->columns) === count($columns);
+
+        foreach ($columns as $i => $column) {
+            if (!isset($this->columns[$i]) || $this->columns[$i] !== $column) {
+                $sameColumns = false;
+            }
+        }
+
+        return $sameColumns;
     }
 
     /**
      * @return array
      */
-    public static function toArray(DoctrineIndex $index)
+    public static function toArray(self $index)
     {
         $name = $index->getName();
         $columns = $index->getColumns();
@@ -72,23 +159,23 @@ abstract class Index
         ];
     }
 
-    public static function getType(DoctrineIndex $index)
+    public static function getType(self $index)
     {
         if ($index->isPrimary()) {
             return static::PRIMARY;
         } elseif ($index->isUnique()) {
             return static::UNIQUE;
-        } else {
-            return static::INDEX;
         }
+
+        return static::INDEX;
     }
 
     /**
      * Create a default index name.
      *
-     * @param array  $columns
-     * @param string $type
-     * @param string $table
+     * @param array       $columns
+     * @param string      $type
+     * @param string|null $table
      *
      * @return string
      */
