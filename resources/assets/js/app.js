@@ -1,3 +1,4 @@
+import '../sass/app.scss';
 import * as Vue from 'vue';
 window.Vue = Vue;
 import { createAdminApp } from './voyager-vue';
