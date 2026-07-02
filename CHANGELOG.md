@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.0] - 2026-07-02
+## [2.0.1] - 2026-07-02
 
 ### Breaking
 
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Bootstrap-style pagination in the admin panel now actually renders Bootstrap markup. A string-literal bug in the `method_exists()` check that enables `Paginator::useBootstrap()` meant the guard always evaluated to `false`, so the admin panel had silently been rendering Laravel's default (Tailwind) pagination markup instead of Bootstrap markup. If your admin panel's pagination controls change appearance after upgrading, this is why — it's the intended, correct behavior.
+- `describeTable()` now returns the `null` column flag as the historical `"YES"`/`"NO"` string (matching MySQL's `DESCRIBE` output) instead of a raw boolean. The boolean broke the strict comparison in `Column::make()` and would have displayed literal `true`/`false` instead of `YES`/`NO` in the database-manager's "Show Table Info" modal.
 
 ### Changed
 
@@ -27,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Internal
 
 - The test suite was migrated off the abandoned `laravel/browser-kit-testing` / `orchestra/testbench-browser-kit` packages onto standard Testbench/Illuminate testing APIs. This has no effect on package consumers, but is relevant to contributors running the test suite.
+- Fixed the remaining PHPUnit 12 API incompatibilities in the test suite (mock builder and data provider changes), so the full suite (138 tests) runs clean in CI.
 
 ### Known limitations
 
