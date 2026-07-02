@@ -94,7 +94,8 @@
 @include('voyager::tools.database.vue-components.database-table-helper-buttons')
 
 <script>
-    Vue.component('database-table-editor', {
+    window.voyagerComponents = window.voyagerComponents || {};
+    window.voyagerComponents['database-table-editor'] = {
         props: {
             table: {
                 type: Object,
@@ -284,5 +285,5 @@
                 return [...new Set(columns)];
             }
         }
-    });
+    };
 </script>

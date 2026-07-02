@@ -1,5 +1,7 @@
-import Vue from 'vue';
+import * as Vue from 'vue';
 window.Vue = Vue;
+import { createAdminApp } from './voyager-vue';
+window.VoyagerVue = { createAdminApp };
 import jQuery from 'jquery';
 window.jQuery = jQuery;
 window.$ = jQuery;
@@ -28,11 +30,9 @@ window.voyagerTinyMCE = require('./voyager_tinymce_config');
 require('./voyager_ace_editor');
 window.helpers = require('./helpers.js');
 
-Vue.component('admin-menu', require('./components/admin_menu.vue').default);
-
-var admin_menu = new Vue({
-    el: '#adminmenu',
-});
+var admin_menu = createAdminApp({}, {
+    'admin-menu': require('./components/admin_menu.vue').default,
+}).mount('#adminmenu');
 
 $(document).ready(function () {
     var appContainer = $(".app-container"),

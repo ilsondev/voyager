@@ -7,7 +7,8 @@
 @endsection
 
 <script>
-    Vue.component('database-table-helper-buttons', {
+    window.voyagerComponents = window.voyagerComponents || {};
+    window.voyagerComponents['database-table-helper-buttons'] = {
         template: `@yield('database-table-helper-buttons-template')`,
         methods: {
             addColumn(column) {
@@ -47,5 +48,5 @@
                 }));
             }
         }
-    });
+    };
 </script>

@@ -23,7 +23,8 @@
         disabled: false
     };
 
-    Vue.component('database-column-default', {
+    window.voyagerComponents = window.voyagerComponents || {};
+    window.voyagerComponents['database-column-default'] = {
         props: {
             column: {
                 type: Object,
@@ -74,5 +75,5 @@
                 };
             }
         }
-    });
+    };
 </script>

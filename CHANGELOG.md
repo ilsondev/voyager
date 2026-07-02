@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- Migrated the admin panel's front-end from Vue 2.7 to Vue 3. Vue 2 was EOL and had an open ReDoS advisory (GHSA-5j4c-8p2g-v4jx) with no Vue-2-compatible fix. This is an internal build/runtime change with no expected difference in admin panel behavior; see #3 for the full migration writeup. Bootstrap 3 and the rest of the front-end toolchain are unchanged and tracked separately.
+
 ## [2.0.1] - 2026-07-02
 
 ### Breaking

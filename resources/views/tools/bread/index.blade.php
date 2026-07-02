@@ -135,12 +135,13 @@
             rows: []
         };
 
-        new Vue({
-            el: '#table_info',
-            data: {
-                table: table,
+        Vue.createApp({
+            data() {
+                return {
+                    table: table,
+                };
             },
-        });
+        }).mount('#table_info');
 
         $(function () {
 
