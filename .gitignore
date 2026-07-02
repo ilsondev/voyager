@@ -7,3 +7,7 @@ build
 composer.lock
 .phpunit.result.cache
 .phpunit.cache
+
+# Local planning/status notes produced during this fork's development.
+# Not part of the versioned project history.
+LARAVEL_13_MIGRATION_PLAN.md
