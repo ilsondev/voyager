@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-07-02
+
+### Changed
+
+- Migrated the admin panel's build tooling from Laravel Mix to Vite. Mix is unmaintained and Vite is Laravel 13's default; since this package serves assets through its own route (`voyager_asset()`) rather than `@vite()`/manifest helpers, no `laravel-vite-plugin` was needed — a plain `vite.config.js` produces the same fixed, unhashed `publishable/assets/{css,js}` output. See #6 for the full writeup.
+- Migrated the admin panel's theme from Bootstrap 3 to Bootstrap 5 across ~34 Blade views: `.panel` → `.card`, Bootstrap's data-API attributes → `data-bs-*`, grid/utility class renames, and glyphicons → Voyager's own icon font. `bootstrap-toggle`, `eonasdan-bootstrap-datetimepicker`, and `datatables-bootstrap3-plugin` (all unmaintained, Bootstrap-3-only) were replaced with Bootstrap 5's native switch markup, `@eonasdan/tempus-dominus`, and `datatables.net-bs5` respectively. This closes the last two open `npm audit` advisories from prior releases. See #5 for the full writeup.
+
+### Fixed
+
+- 3 CI workflows' Node version bumped from 16.x to 20.x (Vite 6 requires Node ≥18).
+
 ## [2.1.0] - 2026-07-02
 
 ### Changed
