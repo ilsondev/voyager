@@ -10,16 +10,17 @@ import PerfectScrollbar from 'perfect-scrollbar';
 window.Cropper = require('cropperjs');
 window.Cropper = 'default' in window.Cropper ? window.Cropper['default'] : window.Cropper;
 window.toastr = require('toastr');
-window.DataTable = require('datatables');
-require('datatables-bootstrap3-plugin/media/js/datatables-bootstrap3');
+require('datatables.net');
+require('datatables.net-bs5');
 window.EasyMDE = require('easymde');
 require('dropzone');
 require('jquery-match-height');
-require('bootstrap-toggle');
 require('nestable2');
-require('bootstrap');
+import * as bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
 require('select2');
-require('eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker');
+import { TempusDominus } from '@eonasdan/tempus-dominus';
+window.TempusDominus = TempusDominus;
 var brace = require('brace');
 require('brace/mode/json');
 require('brace/theme/github');
@@ -137,7 +138,9 @@ $(document).ready(function () {
     });
 
     $(".side-menu .nav .dropdown").on('show.bs.collapse', function () {
-        return $(".side-menu .nav .dropdown .collapse").collapse('hide');
+        $(".side-menu .nav .dropdown .collapse").each(function () {
+            bootstrap.Collapse.getOrCreateInstance(this, { toggle: false }).hide();
+        });
     });
 
     $('.panel-collapse').on('hide.bs.collapse', function(e) {
@@ -152,24 +155,27 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    $(document).on('click', '.panel-heading a.panel-action[data-toggle="panel-collapse"]', function (e) {
+    // Voyager's own hand-rolled panel collapse/fullscreen toggle (data-toggle="panel-collapse"/
+    // "panel-fullscreen" are custom action names, not Bootstrap's data-bs-toggle). .card/.card-header/
+    // .card-body match the panel -> card markup rename done throughout the admin theme.
+    $(document).on('click', '.card-header a.panel-action[data-toggle="panel-collapse"]', function (e) {
         e.preventDefault();
         var $this = $(this);
 
         // Toggle Collapse
         if (!$this.hasClass('panel-collapsed')) {
-            $this.parents('.panel').find('.panel-body').slideUp();
+            $this.parents('.card').find('.card-body').slideUp();
             $this.addClass('panel-collapsed');
             $this.removeClass('voyager-angle-up').addClass('voyager-angle-down');
         } else {
-            $this.parents('.panel').find('.panel-body').slideDown();
+            $this.parents('.card').find('.card-body').slideDown();
             $this.removeClass('panel-collapsed');
             $this.removeClass('voyager-angle-down').addClass('voyager-angle-up');
         }
     });
 
     //Toggle fullscreen
-    $(document).on('click', '.panel-heading a.panel-action[data-toggle="panel-fullscreen"]', function (e) {
+    $(document).on('click', '.card-header a.panel-action[data-toggle="panel-fullscreen"]', function (e) {
         e.preventDefault();
         var $this = $(this);
         if (!$this.hasClass('voyager-resize-full')) {
@@ -177,10 +183,12 @@ $(document).ready(function () {
         } else {
             $this.removeClass('voyager-resize-full').addClass('voyager-resize-small');
         }
-        $this.closest('.panel').toggleClass('is-fullscreen');
+        $this.closest('.card').toggleClass('is-fullscreen');
     });
 
-    $('.datepicker').datetimepicker();
+    $('.datepicker').each(function (idx, elt) {
+        new TempusDominus(elt);
+    });
 
     // Save shortcut
     $(document).keydown(function (e) {

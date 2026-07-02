@@ -348,14 +348,13 @@
         $('document').ready(function () {
             $('#slug').slugify();
 
-            $('.toggleswitch').bootstrapToggle();
-
             //Init datepicker for date fields if data-datepicker attribute defined
             //or if browser does not handle date inputs
             $('.form-group input[type=date]').each(function (idx, elt) {
                 if (elt.type != 'date' || elt.hasAttribute('data-datepicker')) {
                     elt.type = 'text';
-                    $(elt).datetimepicker($(elt).data('datepicker'));
+                    var options = elt.dataset.datepicker ? JSON.parse(elt.dataset.datepicker) : {};
+                    new TempusDominus(elt, options);
                 }
             });
 
