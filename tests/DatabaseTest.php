@@ -16,7 +16,7 @@ use TCG\Voyager\Traits\AlertsMessages;
  * same code paths drive MySQL/PostgreSQL through Laravel's per-connection
  * grammar.
  */
-class DatabaseTest extends DatabaseTestCase
+class DatabaseTest extends TestCase
 {
     use AlertsMessages;
 
