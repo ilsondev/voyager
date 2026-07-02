@@ -37,7 +37,7 @@
 
         // With Children Attributes
         if(!$originalItem->children->isEmpty()) {
-            $linkAttributes =  'class="dropdown-toggle" data-toggle="dropdown"';
+            $linkAttributes =  'class="dropdown-toggle" data-bs-toggle="dropdown"';
             $caret = '<span class="caret"></span>';
 
             if(url($item->link()) == url()->current()){
