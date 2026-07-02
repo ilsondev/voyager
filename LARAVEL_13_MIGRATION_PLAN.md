@@ -37,18 +37,24 @@ Fonte: [laravel.com/docs/13.x/upgrade](https://laravel.com/docs/13.x/upgrade)
 
 ## 4. Fases da Migração
 
-### Fase 0 — Baseline e preparação
-**Objetivo:** ter um ponto de partida limpo e reprodutível antes de tocar em código.
-- [ ] Criar branch de trabalho `laravel-13` a partir do `1.8`.
-- [ ] Instalar Laravel 13 + Testbench `^11.0` num ambiente de teste local (`orchestra/testbench` v11.1 é a versão compatível, exige `laravel/framework ^13.1.1` e `php ^8.3`).
-- [ ] Rodar a suíte de testes atual como baseline (esperado: falhas relacionadas a DBAL).
+> **Status de execução:** branch `laravel-13` (a partir do `1.8`). Fases 2+ são executadas por agentes com contexto zerado, sequencialmente — cada agente lê este arquivo antes de começar e atualiza seu checklist + "Notas de execução" antes de terminar, para que o próximo agente tenha o contexto necessário sem depender do histórico de conversa.
 
-### Fase 1 — Atualização do toolchain (PHP/Composer)
+### Fase 0 — Baseline e preparação ✅ CONCLUÍDA
+**Objetivo:** ter um ponto de partida limpo e reprodutível antes de tocar em código.
+- [x] Criar branch de trabalho `laravel-13` a partir do `1.8`.
+- [ ] Instalar Laravel 13 + Testbench `^11.0` num ambiente de teste local (`orchestra/testbench` v11.1 é a versão compatível, exige `laravel/framework ^13.1.1` e `php ^8.3`). *(pendente — depende de ambiente com PHP 8.3 disponível)*
+- [ ] Rodar a suíte de testes atual como baseline (esperado: falhas relacionadas a DBAL). *(pendente pelo mesmo motivo acima)*
+
+**Notas de execução:** ambiente local não foi validado com `composer install` real (sem PHP 8.3 configurado no momento). Os agentes das próximas fases devem rodar `composer install`/`composer update` como parte do próprio trabalho para validar as mudanças, e reportar se o ambiente não permitir.
+
+### Fase 1 — Atualização do toolchain (PHP/Composer) ✅ CONCLUÍDA
 **Objetivo:** ajustar as constraints antes de qualquer mudança de código.
-- [ ] `composer.json`: `"php": "^8.3"` (dropar 8.2, já que L13 exige 8.3+).
-- [ ] `composer.json`: `"illuminate/support": "^13.0"` (dropar suporte a 8/9/10/11, a menos que se opte por manter compatibilidade multi-versão — ver observação abaixo).
-- [ ] `require-dev`: `"laravel/framework": "^13.0"`, `"orchestra/testbench": "^11.0"`, `"phpunit/phpunit": "^11.5|^12.0"`.
-- [ ] `require`: `"league/flysystem": "^3.25"` (Laravel 13 já usa Flysystem 3.25+ internamente; apertar a constraint evita conflitos de resolução).
+- [x] `composer.json`: `"php": "^8.3"` (dropar 8.2, já que L13 exige 8.3+).
+- [x] `composer.json`: `"illuminate/support": "^13.0"` (suporte apenas a Laravel 13 — decisão tomada: não manter faixa multi-versão neste release).
+- [x] `require-dev`: `"laravel/framework": "^13.0"`, `"orchestra/testbench": "^11.0"`, `"phpunit/phpunit": "^11.5|^12.0"`.
+- [x] `require`: `"league/flysystem": "^3.25"`.
+
+**Notas de execução:** `laravel/browser-kit-testing` e `orchestra/testbench-browser-kit` foram **mantidos intencionalmente** no `composer.json` nesta fase (não são escopo da Fase 1). Isso significa que `composer install` provavelmente vai falhar por conflito de versão até a Fase 3 removê-los — comportamento esperado, não é um bug desta fase. O CI (`.github/workflows/*.yml`) também foi deixado intocado de propósito — é escopo da Fase 6, e atualizá-lo agora deixaria o pipeline vermelho de forma enganosa antes da Fase 2 estar pronta.
 
 > **Decisão a tomar:** suportar *apenas* Laravel 13, ou manter uma faixa (ex.: `~12.0|~13.0`)? Isso muda o esforço da Fase 2 — se precisar manter compatibilidade com versões anteriores que ainda tinham DBAL parcialmente disponível via pacote separado, a reescrita do schema layer precisa de um shim condicional. Recomendo **suporte apenas a 13.x** para este release, dado que o objetivo é modernizar o fork.
 
