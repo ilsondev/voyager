@@ -52,7 +52,7 @@
 		                        </select>
 				            </div>
 				            <div class="col-md-12 relationship_details_more">
-				                <div class="well">
+				                <div class="border rounded p-3">
 				                    <label>{{ __('voyager::database.relationship.selection_details') }}</label>
 				                    <p><strong>{{ __('voyager::database.relationship.display_the') }} <span class="label_table_name"></span>: </strong>
 				                        <select name="relationship_label" class="rowDrop select2" data-table="{{ $tables[0] }}" data-selected="" style="width: 100%">

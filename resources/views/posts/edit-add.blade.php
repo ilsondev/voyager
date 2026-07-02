@@ -188,7 +188,7 @@
                 </div>
                 <div class="col-md-4">
                     <!-- ### DETAILS ### -->
-                    <div class="card card panel-bordered panel-warning">
+                    <div class="card panel-bordered panel-warning">
                         <div class="card-header">
                             <h3 class="card-title"><i class="icon wb-clipboard"></i> {{ __('voyager::post.details') }}</h3>
                             <div class="panel-actions">

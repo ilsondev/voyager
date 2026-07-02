@@ -2,7 +2,7 @@
 
     {{-- If this is a relationship and the method does not exist, show a warning message --}}
     @if( !method_exists( $dataType->model_name, \Illuminate\Support\Str::camel($row->field) ) )
-        <p class="label label-warning"><i class="voyager-warning"></i> {{ __('voyager::form.field_select_dd_relationship', ['method' => \Illuminate\Support\Str::camel($row->field).'()', 'class' => $dataType->model_name]) }}</p>
+        <p class="badge text-bg-warning"><i class="voyager-warning"></i> {{ __('voyager::form.field_select_dd_relationship', ['method' => \Illuminate\Support\Str::camel($row->field).'()', 'class' => $dataType->model_name]) }}</p>
     @endif
 
     @if( method_exists( $dataType->model_name, \Illuminate\Support\Str::camel($row->field) ) )

@@ -24,7 +24,7 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="panel panel-bordered">
+                <div class="card panel-bordered">
                     <!-- form start -->
                     <form role="form"
                             class="form-edit-add"
@@ -38,7 +38,7 @@
                         <!-- CSRF TOKEN -->
                         {{ csrf_field() }}
 
-                        <div class="panel-body">
+                        <div class="card-body">
 
                             @if (count($errors) > 0)
                                 <div class="alert alert-danger">
@@ -69,7 +69,7 @@
 
                                 <div class="form-group @if($row->type == 'hidden') hidden @endif col-md-{{ $display_options->width ?? 12 }} {{ $errors->has($row->field) ? 'has-error' : '' }}" @if(isset($display_options->id)){{ "id=$display_options->id" }}@endif>
                                     {{ $row->slugify }}
-                                    <label class="control-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
+                                    <label class="form-label" for="name">{{ $row->getTranslatedAttribute('display_name') }}</label>
                                     @include('voyager::multilingual.input-hidden-bread-edit-add')
                                     @if ($add && isset($row->details->view_add))
                                         @include($row->details->view_add, ['row' => $row, 'dataType' => $dataType, 'dataTypeContent' => $dataTypeContent, 'content' => $dataTypeContent->{$row->field}, 'view' => 'add', 'options' => $row->details])
@@ -88,15 +88,15 @@
                                     @endforeach
                                     @if ($errors->has($row->field))
                                         @foreach ($errors->get($row->field) as $error)
-                                            <span class="help-block">{{ $error }}</span>
+                                            <span class="invalid-feedback d-block">{{ $error }}</span>
                                         @endforeach
                                     @endif
                                 </div>
                             @endforeach
 
-                        </div><!-- panel-body -->
+                        </div><!-- card-body -->
 
-                        <div class="panel-footer">
+                        <div class="card-footer">
                             @section('submit-buttons')
                                 <button type="submit" class="btn btn-primary save">{{ __('voyager::generic.save') }}</button>
                             @stop
@@ -118,9 +118,8 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"
-                            aria-hidden="true">&times;</button>
                     <h4 class="modal-title"><i class="voyager-warning"></i> {{ __('voyager::generic.are_you_sure') }}</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
@@ -128,7 +127,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
                     <button type="button" class="btn btn-danger" id="confirm_delete">{{ __('voyager::generic.delete_confirm') }}</button>
                 </div>
             </div>
@@ -200,7 +199,7 @@
 
                 $('#confirm_delete_modal').modal('hide');
             });
-            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-bs-toggle="tooltip"]').tooltip();
         });
     </script>
 @stop

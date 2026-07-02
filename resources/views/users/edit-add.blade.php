@@ -102,7 +102,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="card card panel-bordered panel-warning">
+                    <div class="card panel-bordered panel-warning">
                         <div class="card-body">
                             <div class="form-group">
                                 @if(isset($dataTypeContent->avatar))

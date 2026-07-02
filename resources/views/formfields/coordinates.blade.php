@@ -18,7 +18,7 @@
     <div>
         <div class="form-group">
             <div class="col-md-5" v-if="showAutocomplete">
-                <label class="control-label">{{ __('voyager::generic.find_by_place') }}</label>
+                <label class="form-label">{{ __('voyager::generic.find_by_place') }}</label>
                 <input
                     class="form-control"
                     type="text"
@@ -28,7 +28,7 @@
                 />
             </div>
             <div class="col-md-2" v-if="showLatLng">
-                <label class="control-label">{{ __('voyager::generic.latitude') }}</label>
+                <label class="form-label">{{ __('voyager::generic.latitude') }}</label>
                 <input
                     class="form-control"
                     type="number"
@@ -41,7 +41,7 @@
                 />
             </div>
             <div class="col-md-2" v-if="showLatLng">
-                <label class="control-label">{{ __('voyager::generic.longitude') }}</label>
+                <label class="form-label">{{ __('voyager::generic.longitude') }}</label>
                 <input
                     class="form-control"
                     type="number"

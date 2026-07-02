@@ -63,11 +63,9 @@
                                     </div>
                                     <div class="input-group col-md-12">
                                         <input type="text" class="form-control" placeholder="{{ __('voyager::generic.search') }}" name="s" value="{{ $search->value }}">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-info btn-lg" type="submit">
-                                                <i class="voyager-search"></i>
-                                            </button>
-                                        </span>
+                                        <button class="btn btn-info btn-lg" type="submit">
+                                            <i class="voyager-search"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 @if (Request::has('sort_order') && Request::has('order_by'))
@@ -172,9 +170,9 @@
                                                 @elseif($row->type == 'checkbox')
                                                     @if(property_exists($row->details, 'on') && property_exists($row->details, 'off'))
                                                         @if($data->{$row->field})
-                                                            <span class="label label-info">{{ $row->details->on }}</span>
+                                                            <span class="badge text-bg-info">{{ $row->details->on }}</span>
                                                         @else
-                                                            <span class="label label-primary">{{ $row->details->off }}</span>
+                                                            <span class="badge text-bg-primary">{{ $row->details->off }}</span>
                                                         @endif
                                                     @else
                                                     {{ $data->{$row->field} }}
