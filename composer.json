@@ -28,7 +28,7 @@
     "php": "^8.3",
     "illuminate/support": "^13.0",
     "intervention/image": "^2.7",
-    "laravel/ui": ">=1.0",
+    "laravel/ui": "^4.0",
     "arrilot/laravel-widgets": "^3.7",
     "league/flysystem": "^3.25",
     "ext-json": "*"
