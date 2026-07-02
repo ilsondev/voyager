@@ -5,11 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.1.0] - 2026-07-02
 
 ### Changed
 
 - Migrated the admin panel's front-end from Vue 2.7 to Vue 3. Vue 2 was EOL and had an open ReDoS advisory (GHSA-5j4c-8p2g-v4jx) with no Vue-2-compatible fix. This is an internal build/runtime change with no expected difference in admin panel behavior; see #3 for the full migration writeup. Bootstrap 3 and the rest of the front-end toolchain are unchanged and tracked separately.
+
+### Fixed
+
+- Updated `tinymce` (6.8 → 7.9.3) and `postcss`/`nanoid` to their latest patch releases, fixing several XSS advisories (including one high-severity) flagged by `npm audit`. `bootstrap`, `vue`'s previous ReDoS advisory (see above), and the `eonasdan-bootstrap-datetimepicker`/`moment-timezone` advisory remain open, since fixing them requires breaking changes to the admin theme that are out of scope for this release.
 
 ## [2.0.1] - 2026-07-02
 
