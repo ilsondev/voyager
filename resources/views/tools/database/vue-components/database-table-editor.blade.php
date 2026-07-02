@@ -1,7 +1,7 @@
 @section('database-table-editor-template')
 
-<div class="panel panel-bordered">
-    <div class="panel-body">
+<div class="card panel-bordered">
+    <div class="card-body">
         <div class="row">
         @if($db->action == 'update')
             <div class="col-md-12">
@@ -13,21 +13,23 @@
             </div>
 
         @if($db->action == 'create')
-            <div class="col-md-3 col-sm-4 col-xs-6">
+            <div class="col-md-3 col-sm-4 col-6">
                 <label for="create_model">{{ __('voyager::database.create_model_table') }}</label><br>
-                <input type="checkbox" name="create_model" data-toggle="toggle"
-                       data-on="{{ __('voyager::generic.yes_please') }}" data-off="{{ __('voyager::generic.no_thanks') }}">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" role="switch" name="create_model">
+                </div>
             </div>
             {{--
                 Hide migration button until feature is available.
-                 <div class="col-md-3 col-sm-4 col-xs-6">
+                 <div class="col-md-3 col-sm-4 col-6">
                     <label for="create_migration">{{ __('voyager::database.create_migration') }}</label><br>
-                    <input disabled type="checkbox" name="create_migration" data-toggle="toggle"
-                           data-on="{{ __('voyager::generic.yes_please') }}" data-off="{{ __('voyager::generic.no_thanks') }}">
+                    <div class="form-check form-switch">
+                        <input disabled type="checkbox" class="form-check-input" role="switch" name="create_migration">
+                    </div>
                 </div>
             --}}
         @endif
-        </div><!-- .panel-body .row -->
+        </div><!-- .card-body .row -->
 
         <div v-if="compositeIndexes.length" v-once class="alert alert-danger">
             <p>{{ __('voyager::database.no_composites_warning') }}</p>
@@ -77,15 +79,15 @@
                 @columnAdded="addColumn"
             ></database-table-helper-buttons>
         </div>
-    </div><!-- .panel-body -->
+    </div><!-- .card-body -->
 
-    <div class="panel-footer">
-        <input type="submit" class="btn btn-primary pull-right"
+    <div class="card-footer">
+        <input type="submit" class="btn btn-primary float-end"
                value="@if($db->action == 'update'){{ __('voyager::database.update_table') }}@else{{ __('voyager::database.create_new_table') }}@endif"
                :disabled="!tableHasColumns">
         <div style="clear:both"></div>
     </div>
-</div><!-- .panel -->
+</div><!-- .card -->
 
 
 @endsection

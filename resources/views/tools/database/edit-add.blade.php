@@ -17,7 +17,7 @@
 @stop
 
 @section('breadcrumbs')
-<ol class="breadcrumb hidden-xs">
+<ol class="breadcrumb d-none d-sm-block">
     <li>
         <a href="{{ route('voyager.dashboard')}}"><i class="voyager-boat"></i> {{ __('voyager::generic.dashboard') }}</a>
     </li>
