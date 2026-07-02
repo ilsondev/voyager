@@ -26,7 +26,7 @@
 
             <div class="row">
                 <div class="col-md-8">
-                    <div class="panel panel-bordered">
+                    <div class="card panel-bordered">
                     {{-- <div class="panel"> --}}
                         @if (count($errors) > 0)
                             <div class="alert alert-danger">
@@ -38,7 +38,7 @@
                             </div>
                         @endif
 
-                        <div class="panel-body">
+                        <div class="card-body">
                             <div class="form-group">
                                 <label for="name">{{ __('voyager::generic.name') }}</label>
                                 <input type="text" class="form-control" id="name" name="name" placeholder="{{ __('voyager::generic.name') }}"
@@ -102,8 +102,8 @@
                 </div>
 
                 <div class="col-md-4">
-                    <div class="panel panel panel-bordered panel-warning">
-                        <div class="panel-body">
+                    <div class="card card panel-bordered panel-warning">
+                        <div class="card-body">
                             <div class="form-group">
                                 @if(isset($dataTypeContent->avatar))
                                     <img src="{{ filter_var($dataTypeContent->avatar, FILTER_VALIDATE_URL) ? $dataTypeContent->avatar : Voyager::image( $dataTypeContent->avatar ) }}" style="width:200px; height:auto; clear:both; display:block; padding:2px; border:1px solid #ddd; margin-bottom:10px;" />
@@ -115,7 +115,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary pull-right save">
+            <button type="submit" class="btn btn-primary float-end save">
                 {{ __('voyager::generic.save') }}
             </button>
         </form>
@@ -129,7 +129,6 @@
 @section('javascript')
     <script>
         $('document').ready(function () {
-            $('.toggleswitch').bootstrapToggle();
         });
     </script>
 @stop

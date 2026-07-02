@@ -1,4 +1,4 @@
-<div class="panel">
+<div class="card">
     <div class="page-content settings container-fluid">
         <div id="media_picker_{{ $row->field }}">
             <media-manager
