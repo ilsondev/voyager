@@ -2,14 +2,9 @@
 
 namespace TCG\Voyager\Database\Types\Common;
 
-use Doctrine\DBAL\Types\StringType as DoctrineStringType;
+use TCG\Voyager\Database\Types\Type;
 
-class VarCharType extends DoctrineStringType
+class VarCharType extends Type
 {
     public const NAME = 'varchar';
-
-    public function getName()
-    {
-        return static::NAME;
-    }
 }
