@@ -25,26 +25,22 @@ class FormfieldsTest extends TestCase
             'default' => 'Default Text',
             'null'    => 'NULL',
         ]));
-        $this->visitRoute('voyager.categories.create')
-        ->see('Default Text')
-        ->type('New Text', 'text')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('New Text')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('Edited Text', 'text')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Edited Text')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('NULL', 'text')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->seeInDatabase('categories', [
-            'text' => null,
-        ]);
+
+        // The create form shows the configured default value.
+        $this->get(route('voyager.categories.create'))->assertSee('Default Text');
+
+        $this->storeCategory(['text' => 'New Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('New Text');
+
+        $this->updateCategory(1, ['text' => 'Edited Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Edited Text');
+
+        // The configured NULL value is stored as an actual null.
+        $this->updateCategory(1, ['text' => 'NULL'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->assertDatabaseHas('categories', ['text' => null]);
     }
 
     public function testFormfieldTextbox()
@@ -53,18 +49,15 @@ class FormfieldsTest extends TestCase
             'default' => 'Default Text',
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->see('Default Text')
-        ->type('New Text', 'text_area')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('New Text')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('Edited Text', 'text_area')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Edited Text');
+        $this->get(route('voyager.categories.create'))->assertSee('Default Text');
+
+        $this->storeCategory(['text_area' => 'New Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('New Text');
+
+        $this->updateCategory(1, ['text_area' => 'Edited Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Edited Text');
     }
 
     public function testFormfieldCodeeditor()
@@ -73,52 +66,41 @@ class FormfieldsTest extends TestCase
             'default' => 'Default Text',
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->see('Default Text')
-        ->type('New Text', 'code_editor')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('New Text')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('Edited Text', 'code_editor')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Edited Text');
+        $this->get(route('voyager.categories.create'))->assertSee('Default Text');
+
+        $this->storeCategory(['code_editor' => 'New Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('New Text');
+
+        $this->updateCategory(1, ['code_editor' => 'Edited Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Edited Text');
     }
 
     public function testFormfieldMarkdown()
     {
         $this->createBreadForFormfield('text', 'markdown_editor');
 
-        $this->visitRoute('voyager.categories.create')
-        ->type('# New Text', 'markdown_editor')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('New Text')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('# Edited Text', 'markdown_editor')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Edited Text');
+        $this->storeCategory(['markdown_editor' => '# New Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('New Text');
+
+        $this->updateCategory(1, ['markdown_editor' => '# Edited Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Edited Text');
     }
 
     public function testFormfieldRichtextbox()
     {
         $this->createBreadForFormfield('text', 'rich_text_box');
 
-        $this->visitRoute('voyager.categories.create')
-        ->type('New Text', 'rich_text_box')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('New Text')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('Edited Text', 'rich_text_box')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Edited Text');
+        $this->storeCategory(['rich_text_box' => 'New Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('New Text');
+
+        $this->updateCategory(1, ['rich_text_box' => 'Edited Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Edited Text');
     }
 
     public function testFormfieldHidden()
@@ -127,34 +109,28 @@ class FormfieldsTest extends TestCase
             'default' => 'Default Text',
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->see('Default Text')
-        ->type('New Text', 'hidden')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('New Text')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('Edited Text', 'hidden')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Edited Text');
+        $this->get(route('voyager.categories.create'))->assertSee('Default Text');
+
+        $this->storeCategory(['hidden' => 'New Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('New Text');
+
+        $this->updateCategory(1, ['hidden' => 'Edited Text'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Edited Text');
     }
 
     public function testFormfieldPassword()
     {
         $this->createBreadForFormfield('text', 'password');
 
-        $t = $this->visitRoute('voyager.categories.create')
-        ->type('newpassword', 'password')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index');
+        $this->storeCategory(['password' => 'newpassword'])
+             ->assertRedirect(route('voyager.categories.index'));
         $this->assertTrue(Hash::check('newpassword', Category::first()->password));
 
-        $t->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index');
+        // Submitting an empty password on edit must preserve the existing hash.
+        $this->updateCategory(1, ['password' => ''])
+             ->assertRedirect(route('voyager.categories.index'));
         $this->assertTrue(Hash::check('newpassword', Category::first()->password));
     }
 
@@ -164,18 +140,15 @@ class FormfieldsTest extends TestCase
             'default' => 1,
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->see('1')
-        ->type('2', 'number')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('2')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('3', 'number')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('3');
+        $this->get(route('voyager.categories.create'))->assertSee('1');
+
+        $this->storeCategory(['number' => '2'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('2');
+
+        $this->updateCategory(1, ['number' => '3'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('3');
     }
 
     public function testFormfieldCheckbox()
@@ -185,35 +158,29 @@ class FormfieldsTest extends TestCase
             'off' => 'Inactive',
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->see('Inactive')
-        ->check('checkbox')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Active')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->uncheck('checkbox')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Inactive');
+        $this->get(route('voyager.categories.create'))->assertSee('Inactive');
+
+        // A checked checkbox posts the value "on"; unchecked posts nothing.
+        $this->storeCategory(['checkbox' => 'on'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Active');
+
+        $this->updateCategory(1, [])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Inactive');
     }
 
     public function testFormfieldTime()
     {
         $this->createBreadForFormfield('time', 'time');
 
-        $this->visitRoute('voyager.categories.create')
-        ->type('12:50', 'time')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('12:50')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('6:25', 'time')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('6:25');
+        $this->storeCategory(['time' => '12:50'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('12:50');
+
+        $this->updateCategory(1, ['time' => '6:25'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('6:25');
     }
 
     public function testFormfieldDate()
@@ -222,17 +189,13 @@ class FormfieldsTest extends TestCase
             'format' => '%Y-%m-%d',
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->type('2019-01-01', 'date')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('2019-01-01')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('2018-12-31', 'date')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('2018-12-31');
+        $this->storeCategory(['date' => '2019-01-01'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('2019-01-01');
+
+        $this->updateCategory(1, ['date' => '2018-12-31'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('2018-12-31');
     }
 
     public function testFormfieldTimestamp()
@@ -241,42 +204,31 @@ class FormfieldsTest extends TestCase
             'format' => '%F %T',
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->type('2019-01-01 12:00:00', 'timestamp')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('2019-01-01 12:00:00')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('2018-12-31 23:59:59', 'timestamp')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('2018-12-31 23:59:59')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('', 'timestamp')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->seeInDatabase('categories', [
-            'timestamp' => null,
-        ]);
+        $this->storeCategory(['timestamp' => '2019-01-01 12:00:00'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('2019-01-01 12:00:00');
+
+        $this->updateCategory(1, ['timestamp' => '2018-12-31 23:59:59'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('2018-12-31 23:59:59');
+
+        // An empty timestamp is stored as null.
+        $this->updateCategory(1, ['timestamp' => ''])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->assertDatabaseHas('categories', ['timestamp' => null]);
     }
 
     public function testFormfieldColor()
     {
         $this->createBreadForFormfield('text', 'color');
 
-        $this->visitRoute('voyager.categories.create')
-        ->type('#FF0000', 'color')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('#FF0000')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->type('#00FF00', 'color')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('#00FF00');
+        $this->storeCategory(['color' => '#FF0000'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('#FF0000');
+
+        $this->updateCategory(1, ['color' => '#00FF00'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('#00FF00');
     }
 
     public function testFormfieldRadiobtn()
@@ -289,17 +241,13 @@ class FormfieldsTest extends TestCase
             ],
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->select('radio1', 'radio_btn')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Foo')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->select('radio2', 'radio_btn')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Bar');
+        $this->storeCategory(['radio_btn' => 'radio1'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Foo');
+
+        $this->updateCategory(1, ['radio_btn' => 'radio2'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Bar');
     }
 
     public function testFormfieldSelectDropdown()
@@ -312,33 +260,27 @@ class FormfieldsTest extends TestCase
             ],
         ]));
 
-        $this->visitRoute('voyager.categories.create')
-        ->select('option1', 'select_dropdown')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Foo')
-        ->click(__('voyager::generic.edit'))
-        ->seeRouteIs('voyager.categories.edit', 1)
-        ->select('option2', 'select_dropdown')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->see('Bar');
+        $this->storeCategory(['select_dropdown' => 'option1'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Foo');
+
+        $this->updateCategory(1, ['select_dropdown' => 'option2'])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->get(route('voyager.categories.index'))->assertSee('Bar');
     }
 
     public function testFormfieldFile()
     {
         $this->createBreadForFormfield('text', 'file');
         $file = UploadedFile::fake()->create('test.txt', 1);
-        $this->visitRoute('voyager.categories.create')
-        ->attach([$file->getPathName()], 'file[]')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->visitRoute('voyager.categories.create')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->seeInDatabase('categories', [
-            'file' => '[]',
-        ]);
+
+        $this->storeCategory([], ['file' => [$file]])
+             ->assertRedirect(route('voyager.categories.index'));
+
+        // Storing with no file leaves an empty JSON array.
+        $this->storeCategory([])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->assertDatabaseHas('categories', ['file' => '[]']);
     }
 
     public function testFormfieldFilePreserve()
@@ -347,16 +289,41 @@ class FormfieldsTest extends TestCase
             'preserveFileUploadName' => true,
         ]));
         $file = UploadedFile::fake()->create('test.txt', 1);
-        $this->visitRoute('voyager.categories.create')
-        ->attach([$file->getPathName()], 'file[]')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->visitRoute('voyager.categories.create')
-        ->press(__('voyager::generic.save'))
-        ->seeRouteIs('voyager.categories.index')
-        ->seeInDatabase('categories', [
-            'file' => '[]',
-        ]);
+
+        $this->storeCategory([], ['file' => [$file]])
+             ->assertRedirect(route('voyager.categories.index'));
+
+        $this->storeCategory([])
+             ->assertRedirect(route('voyager.categories.index'));
+        $this->assertDatabaseHas('categories', ['file' => '[]']);
+    }
+
+    /**
+     * Post a new category through the BREAD data store endpoint.
+     */
+    protected function storeCategory(array $data, array $files = [])
+    {
+        return $this->call(
+            'POST',
+            route('voyager.categories.store'),
+            $data,
+            [],
+            $files
+        );
+    }
+
+    /**
+     * Update a category through the BREAD data update endpoint.
+     */
+    protected function updateCategory($id, array $data, array $files = [])
+    {
+        return $this->call(
+            'PUT',
+            route('voyager.categories.update', $id),
+            $data,
+            [],
+            $files
+        );
     }
 
     private function createBreadForFormfield($type, $name, $options = '')
@@ -371,15 +338,64 @@ class FormfieldsTest extends TestCase
         // Delete old BREAD
         $this->delete(route('voyager.bread.delete', ['id' => DataType::where('name', 'categories')->first()->id]));
 
-        // Create BREAD
-        $this->visitRoute('voyager.bread.create', ['table' => 'categories'])
-        ->select($name, 'field_input_type_'.$name)
-        ->type($options, 'field_details_'.$name)
-        ->type('TCG\\Voyager\\Models\\Category', 'model_name')
-        ->press(__('voyager::generic.submit'))
-        ->seeRouteIs('voyager.bread.index');
+        // Create BREAD by posting the full data-type form for the categories
+        // table. The store endpoint iterates over every column, so we build the
+        // per-field payload for all columns and set the requested input type on
+        // our target field.
+        $payload = $this->breadPayload($name, $options);
+
+        $this->post(route('voyager.bread.store'), $payload)
+             ->assertRedirect(route('voyager.bread.index'));
 
         // Attach permissions to role
         Auth::user()->role->permissions()->syncWithoutDetaching(Permission::all()->pluck('id'));
+    }
+
+    /**
+     * Build the BREAD store payload for the categories table, giving the target
+     * field the requested input type/details.
+     */
+    private function breadPayload($fieldName, $options)
+    {
+        $columns = Schema::getColumnListing('categories');
+
+        $payload = [
+            'name'                  => 'categories',
+            'slug'                  => 'categories',
+            'display_name_singular' => 'Category',
+            'display_name_plural'   => 'Categories',
+            'model_name'            => 'TCG\\Voyager\\Models\\Category',
+            'controller'            => '',
+            'policy_name'           => '',
+            'url'                   => '',
+            'server_side'           => 0,
+            'generate_permissions'  => 1,
+            'details'               => '',
+        ];
+
+        // Auto-managed columns are visible but never editable through the form.
+        $readOnly = ['id', 'created_at', 'updated_at', 'deleted_at'];
+
+        $order = 1;
+        foreach ($columns as $column) {
+            $editable = !in_array($column, $readOnly);
+            $inputType = $column === $fieldName ? $fieldName : 'text';
+            $details = $column === $fieldName ? ($options ?: '') : '';
+
+            $payload['field_'.$column] = $column;
+            $payload['field_input_type_'.$column] = $inputType;
+            $payload['field_details_'.$column] = $details;
+            $payload['field_display_name_'.$column] = ucfirst(str_replace('_', ' ', $column));
+            $payload['field_order_'.$column] = $order++;
+            $payload['field_browse_'.$column] = 1;
+            $payload['field_read_'.$column] = 1;
+            if ($editable) {
+                $payload['field_edit_'.$column] = 1;
+                $payload['field_add_'.$column] = 1;
+            }
+            $payload['field_delete_'.$column] = 1;
+        }
+
+        return $payload;
     }
 }

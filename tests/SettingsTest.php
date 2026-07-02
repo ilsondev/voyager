@@ -22,33 +22,50 @@ class SettingsTest extends TestCase
         $key = 'site.title';
         $newTitle = 'Just Another LaravelVoyager.com Site';
 
-        $this->visit(route('voyager.settings.index'))
-             ->seeInField($key, Setting::where('key', '=', $key)->first()->value)
-             ->type($newTitle, $key)
-             ->seeInElement('button', __('voyager::settings.save'))
-             ->press(__('voyager::settings.save'))
-             ->seePageIs(route('voyager.settings.index'))
-             ->seeInDatabase('settings', [
-                 'key'   => $key,
-                 'value' => $newTitle,
-             ]);
+        $setting = Setting::where('key', '=', $key)->first();
+
+        // The settings index shows the current value and a save button.
+        $this->get(route('voyager.settings.index'))
+             ->assertSee($setting->value)
+             ->assertSee(__('voyager::settings.save'));
+
+        // Settings are updated in bulk; each field is posted as the key with
+        // dots replaced by underscores, plus a `<key>_group` companion field.
+        // The controller rebuilds every setting's key from these, so all
+        // settings must be present to preserve their groups/values.
+        $payload = [];
+        foreach (Setting::all() as $s) {
+            $field = str_replace('.', '_', $s->key);
+            $payload[$field] = $s->value;
+            $payload[$field.'_group'] = $s->group;
+        }
+        $payload[str_replace('.', '_', $key)] = $newTitle;
+
+        $this->put(route('voyager.settings.update'), $payload)
+             ->assertRedirect(route('voyager.settings.index'));
+
+        $this->assertDatabaseHas('settings', [
+            'key'   => $key,
+            'value' => $newTitle,
+        ]);
     }
 
     public function testCanCreateSetting()
     {
-        $this->visitRoute('voyager.settings.index')
-             ->type('New Setting', 'display_name')
-             ->type('new_setting', 'key')
-             ->select('text', 'type')
-             ->select('Site', 'group')
-             ->press(__('voyager::settings.add_new'))
-             ->seePageIs(route('voyager.settings.index'))
-             ->seeInDatabase('settings', [
+        $this->post(route('voyager.settings.store'), [
                  'display_name' => 'New Setting',
-                 'key'          => 'site.new_setting',
+                 'key'          => 'new_setting',
                  'type'         => 'text',
                  'group'        => 'Site',
-             ]);
+             ])
+             ->assertRedirect(route('voyager.settings.index'));
+
+        $this->assertDatabaseHas('settings', [
+            'display_name' => 'New Setting',
+            'key'          => 'site.new_setting',
+            'type'         => 'text',
+            'group'        => 'Site',
+        ]);
     }
 
     public function testCanDeleteSetting()
@@ -57,7 +74,7 @@ class SettingsTest extends TestCase
 
         $this->call('DELETE', route('voyager.settings.delete', $setting->id));
 
-        $this->notSeeInDatabase('settings', [
+        $this->assertDatabaseMissing('settings', [
             'id'    => $setting->id,
         ]);
     }
@@ -69,7 +86,7 @@ class SettingsTest extends TestCase
 
         $this->call('PUT', route('voyager.settings.delete_value', $setting->id));
 
-        $this->seeInDatabase('settings', [
+        $this->assertDatabaseHas('settings', [
             'id'    => $setting->id,
             'value' => '',
         ]);
@@ -81,7 +98,7 @@ class SettingsTest extends TestCase
 
         $this->call('GET', route('voyager.settings.move_up', $setting->id));
 
-        $this->seeInDatabase('settings', [
+        $this->assertDatabaseHas('settings', [
             'id'    => $setting->id,
             'order' => ($setting->order - 1),
         ]);
@@ -93,7 +110,7 @@ class SettingsTest extends TestCase
 
         $this->call('GET', route('voyager.settings.move_down', $setting->id));
 
-        $this->seeInDatabase('settings', [
+        $this->assertDatabaseHas('settings', [
             'id'    => $setting->id,
             'order' => ($setting->order + 1),
         ]);
