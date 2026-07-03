@@ -1424,7 +1424,15 @@ table.dataTable.no-footer{
   border: 1px solid #DDD; }
 
 .breadcrumb {
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  /* The breadcrumb markup uses bare <li> items (not .breadcrumb-item) and is
+     forced to display:block by d-sm-block. Bootstrap 5 no longer lays those
+     out inline the way Bootstrap 3 did, so restore horizontal flow and drop
+     the default list marker/indent. */
+  padding-left: 0;
+  list-style: none; }
+.breadcrumb > li {
+  display: inline-block; }
 .breadcrumb > li + li:before {
   font-family: Voyager;
   content: '\e046';
@@ -4770,7 +4778,13 @@ float: left;
   padding-left:10px;
 }
 
-.navbar .open .dropdown-menu.dropdown-menu-animated {
+/* Bootstrap 5 marks an open dropdown menu with .show (Bootstrap 3 used .open
+   on the parent). Match both so the animated profile menu actually reveals. */
+.navbar .open .dropdown-menu.dropdown-menu-animated,
+.navbar .dropdown-menu.dropdown-menu-animated.show {
+    /* display/visibility here overrides the profile menu's hidden default
+       (.navbar .dropdown.profile .dropdown-menu { display:none }). */
+    display: block;
     visibility: visible;
     opacity: 1;
     transition: opacity .5s, transform .5s;
