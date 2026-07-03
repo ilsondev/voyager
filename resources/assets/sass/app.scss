@@ -4709,11 +4709,21 @@ overflow-x: hidden;
     margin-top:5px;
 }
 
+.navbar .dropdown.profile {
+  position: relative;
+}
 .navbar .dropdown.profile .dropdown-menu{
   width:250px;
   padding: 18px;
   display: none;
-  position: relative !important;
+  /* Float below-right of the toggle without shoving it. position:absolute
+     (was relative, which kept the menu in flow and pushed the avatar left);
+     the toggle carries data-bs-display="static" so Bootstrap 5's Popper does
+     not overwrite the open/close animation transform. */
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: auto;
   visibility: hidden;
 }
 
