@@ -130,7 +130,7 @@
             border-bottom:0px;
         }
 
-        .voyager .settings .nav-tabs .active a{
+        .voyager .settings .nav-tabs a.active{
             border:0px;
         }
 
@@ -186,7 +186,7 @@
             padding-right:0px;
         }
 
-        .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover{
+        .nav-tabs > li > a.active, .nav-tabs > li > a.active:focus, .nav-tabs > li > a.active:hover{
             background:#fff !important;
             color:#62a8ea !important;
             border-bottom:1px solid #fff !important;
@@ -198,7 +198,7 @@
         }
 
 
-        .nav-tabs > li.active > a:focus{
+        .nav-tabs > li > a.active:focus{
             top:0px !important;
         }
 
@@ -235,15 +235,15 @@
                 <div class="page-content settings container-fluid">
                     <ul class="nav nav-tabs">
                         @foreach($settings as $group => $setting)
-                            <li @if($group == $active) class="active" @endif>
-                                <a data-bs-toggle="tab" href="#{{ \Illuminate\Support\Str::slug($group) }}">{{ $group }}</a>
+                            <li>
+                                <a data-bs-toggle="tab" @if($group == $active) class="active" @endif href="#{{ \Illuminate\Support\Str::slug($group) }}">{{ $group }}</a>
                             </li>
                         @endforeach
                     </ul>
 
                     <div class="tab-content">
                         @foreach($settings as $group => $group_settings)
-                        <div id="{{ \Illuminate\Support\Str::slug($group) }}" class="tab-pane fade in @if($group == $active) active @endif">
+                        <div id="{{ \Illuminate\Support\Str::slug($group) }}" class="tab-pane fade @if($group == $active) show active @endif">
                             @foreach($group_settings as $setting)
                             <div class="card-header">
                                 <h3 class="card-title">

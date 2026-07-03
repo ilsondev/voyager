@@ -30,7 +30,7 @@
         </ul>
 
         <div class="tab-content">
-            <div id="resources" class="tab-pane fade in @if(empty($active_tab) || (isset($active_tab) && $active_tab == 'resources')){!! 'active' !!}@endif">
+            <div id="resources" class="tab-pane fade @if(empty($active_tab) || (isset($active_tab) && $active_tab == 'resources')){!! 'show active' !!}@endif">
                 <h3><i class="voyager-book"></i> {{ __('voyager::compass.resources.title') }} <small>{{ __('voyager::compass.resources.text') }}</small></h3>
 
                 <div class="collapsible">
@@ -72,14 +72,14 @@
               </div>
             </div>
 
-          <div id="commands" class="tab-pane fade in @if($active_tab == 'commands'){!! 'active' !!}@endif">
+          <div id="commands" class="tab-pane fade @if($active_tab == 'commands'){!! 'show active' !!}@endif">
             <h3><i class="voyager-terminal"></i> {{ __('voyager::compass.commands.title') }} <small>{{ __('voyager::compass.commands.text') }}</small></h3>
             <div id="command_lists">
                 @include('voyager::compass.includes.commands')
             </div>
 
           </div>
-          <div id="logs" class="tab-pane fade in @if($active_tab == 'logs'){!! 'active' !!}@endif">
+          <div id="logs" class="tab-pane fade @if($active_tab == 'logs'){!! 'show active' !!}@endif">
             <div class="row">
 
                 @include('voyager::compass.includes.logs')
