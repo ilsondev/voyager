@@ -44,4 +44,21 @@ class AssetsTest extends TestCase
         $response = $this->call('GET', route('voyager.dashboard').$this->prefix.$url);
         $this->assertContains($response->status(), [404, 500], $url.' did not return a 404 or 500');
     }
+
+    public function testAssetUrlIsCacheBustedByFileVersion()
+    {
+        // A real, published asset gets a content-version token so the 1-year
+        // cache lifetime doesn't serve stale JS/CSS across package rebuilds.
+        $this->assertMatchesRegularExpression(
+            '/[?&]v=\d+/',
+            voyager_asset('css/app.css'),
+            'voyager_asset() should append a version token for existing assets'
+        );
+
+        // A path with no backing file must not append a bogus version token.
+        $this->assertStringNotContainsString(
+            '&v=',
+            voyager_asset('does/not/exist.js')
+        );
+    }
 }
