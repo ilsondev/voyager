@@ -52,16 +52,23 @@ class Menu extends Model
      */
     public static function display($menuName, $type = null, array $options = [])
     {
-        // GET THE MENU - sort collection in blade
-        $menu = \Cache::remember('voyager_menu_'.$menuName, \Carbon\Carbon::now()->addDays(30), function () use ($menuName) {
-            return static::where('name', '=', $menuName)
-            ->with(['parent_items.children' => function ($q) {
-                $q->orderBy('order');
-            }])
-            ->first();
+        // Cache only the scalar id: caching the hydrated model would require
+        // unserializing an Eloquent object graph from the cache store, which
+        // Laravel's default `cache.serializable_classes = false` blocks
+        // (every object silently becomes __PHP_Incomplete_Class).
+        $menuId = \Cache::remember('voyager_menu_'.$menuName.'_id', \Carbon\Carbon::now()->addDays(30), function () use ($menuName) {
+            return static::where('name', '=', $menuName)->value('id');
         });
 
         // Check for Menu Existence
+        if (!$menuId) {
+            return false;
+        }
+
+        $menu = static::with(['parent_items.children' => function ($q) {
+            $q->orderBy('order');
+        }])->find($menuId);
+
         if (!isset($menu)) {
             return false;
         }
@@ -102,7 +109,7 @@ class Menu extends Model
 
     public function removeMenuFromCache()
     {
-        \Cache::forget('voyager_menu_'.$this->name);
+        \Cache::forget('voyager_menu_'.$this->name.'_id');
     }
 
     protected static function processItems($items)
