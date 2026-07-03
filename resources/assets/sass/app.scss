@@ -537,6 +537,11 @@ a:hover {
   position: fixed;
   width: 60px;
   height: 100%;
+  /* Some inherited rule leaves ~0.75em horizontal padding on the rail, which
+     (with box-sizing:border-box) shrinks the usable width so the menu icons
+     overflow to the right of the 60px rail. Keep the rail edge-to-edge. */
+  padding-left: 0;
+  padding-right: 0;
   -webkit-transition: width 0.25s;
   transition: width 0.25s; }
 .app-container .content-container .side-menu .navbar-header {
@@ -571,7 +576,14 @@ a:hover {
   opacity: 0.75; }
 .app-container .content-container .side-menu .navbar {
   border: none;
-  padding-left: 0; }
+  /* Bootstrap 5 makes .navbar a flex container, which shrink-wraps and
+     centres the sidebar nav inside the 60px icon rail (pushing icons off
+     to the right). The sidebar nav is a plain vertical stack, so force it
+     back to a full-width block like the Bootstrap 3-era markup expected. */
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0; }
 .app-container .content-container .side-menu .navbar-nav li {
   display: block;
   width: 100%;
@@ -4944,7 +4956,7 @@ float: left;
   padding:0px;
 }
 
-.panel.widget{
+.card.widget{
   padding:30px;
   border:0px;
   border-radius:3px;
@@ -4952,18 +4964,18 @@ float: left;
   margin:10px;
 }
 
-.panel.widget.center{
+.card.widget.center{
   text-align:center;
 }
 
-.panel.widget .avatar{
+.card.widget .avatar{
     width: 100px;
     height: auto;
     border: 0 none;
     border-radius: 50%;
 }
 
-.panel.widget i{
+.card.widget i{
     font-size: 48px;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
@@ -4975,14 +4987,14 @@ float: left;
     line-height: 110px;
 }
 
-.panel.widget h4{
+.card.widget h4{
   color:#fff;
   font-weight:300;
   margin-top:20px;
   font-size:20px;
 }
 
-.panel.widget p{
+.card.widget p{
   margin:30px 0;
   font-size:20px;
   font-size: 14px;
@@ -4993,13 +5005,13 @@ float: left;
   margin-bottom:0px;
 }
 
-.panel.widget .readm-link{
+.card.widget .readm-link{
   margin-top:20px;
   color:#fff;
   text-decoration: underline;
 }
 
-.panel.widget .btn-primary{
+.card.widget .btn-primary{
   margin-top:20px;
   color:#fff;
 }
@@ -5015,18 +5027,18 @@ float: left;
     -webkit-font-smoothing: subpixel-antialiased;
 }
 
-.panel.widget.bgimage{
+.card.widget.bgimage{
   background-size:cover;
   background-position:center center;
   position:relative;
 }
 
-.panel.widget .panel-content{
+.card.widget .panel-content{
   z-index:9;
   position:relative;
 }
 
-.panel.widget .dimmer{
+.card.widget .dimmer{
   background:rgba(45,53,61, 0.5);
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#2d353d+0,2d353d+100&0.79+0,0.5+100 */
   background: -moz-linear-gradient(-45deg,  rgba(45,53,61,0.79) 0%, rgba(45,53,61,0.5) 100%); /* FF3.6-15 */
@@ -5043,11 +5055,11 @@ float: left;
   border-radius:0px;
 }
 
-.side-menu .panel.widget .dimmer{
+.side-menu .card.widget .dimmer{
   border-radius: 0px;
 }
 
-.side-menu:hover .panel.widget .dimmer, .expanded .side-menu .panel.widget .dimmer{
+.side-menu:hover .card.widget .dimmer, .expanded .side-menu .card.widget .dimmer{
 
   background: -moz-linear-gradient(275deg, rgba(36,44,50,1) 0%, rgba(36,44,50,0.95) 34%, rgba(36,44,50,0.7) 100%);
   background: -webkit-linear-gradient(275deg, rgba(36,44,50,1) 0%,rgba(36,44,50,0.95) 34%,rgba(36,44,50,0.7) 100%);
@@ -5060,27 +5072,27 @@ float: left;
   margin-bottom:0px;
 }
 
- .side-menu .panel.widget{
+ .side-menu .card.widget{
   padding:12px 0;
   margin:0px;
   border-radius:0px;
 }
 
-.side-menu-container  .side-menu .panel.widget .dimmer{
+.side-menu-container  .side-menu .card.widget .dimmer{
   border-radius:0px;
 }
 
 
-.app-container  .side-menu .panel.widget p, .app-container  .side-menu .panel.widget h4, .app-container  .side-menu .panel.widget a {
+.app-container  .side-menu .card.widget p, .app-container  .side-menu .card.widget h4, .app-container  .side-menu .card.widget a {
   display:none;
 }
 
-.app-container  .side-menu .panel.widget p{
+.app-container  .side-menu .card.widget p{
   font-size:12px;
   margin-top:0px;
 }
 
-.app-container  .side-menu .panel.widget .avatar{
+.app-container  .side-menu .card.widget .avatar{
     width: 36px;
     height: 36px;
     float: left;
@@ -5090,7 +5102,7 @@ float: left;
     top: 3px;
 }
 
-.app-container .side-menu .panel.widget h4 {
+.app-container .side-menu .card.widget h4 {
     float: left;
     display: block;
     position: absolute;
@@ -5106,15 +5118,15 @@ float: left;
     height: 26px;
 }
 
-.app-container.expanded .panel.widget h4 {
+.app-container.expanded .card.widget h4 {
   opacity:1;
 }
 
-.app-container .side-menu:hover .panel.widget h4 {
+.app-container .side-menu:hover .card.widget h4 {
   opacity:1;
 }
 
-.app-container .side-menu:hover .panel.widget .avatar{
+.app-container .side-menu:hover .card.widget .avatar{
   float:left;
   margin-left:12px;
   transition:none;

@@ -9,6 +9,18 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 // vendor:publish, so output filenames must stay fixed (no content hashing)
 // and match the existing publishable/assets/{css,js} layout exactly.
 export default defineConfig(({ mode }) => ({
+    resolve: {
+        alias: {
+            // Vue's package.json "exports" map points the bare `vue` import
+            // at the runtime-only build by default (no template compiler).
+            // The admin menu and other root apps are mounted with no
+            // render/template (see resources/assets/js/voyager-vue.js),
+            // relying on Vue compiling the mount target's innerHTML as an
+            // in-DOM template — that silently no-ops on the runtime-only
+            // build (dev logs a warning, production just renders nothing).
+            vue: 'vue/dist/vue.esm-bundler.js',
+        },
+    },
     css: {
         preprocessorOptions: {
             scss: {

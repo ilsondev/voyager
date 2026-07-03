@@ -1,39 +1,56 @@
 import '../sass/app.scss';
-import * as Vue from 'vue';
-window.Vue = Vue;
+// Must be imported first: some jQuery plugins below (e.g. nestable2) read
+// window.jQuery/$ at module-evaluation time rather than doing their own
+// `require('jquery')`, and ES imports all evaluate before this file's own
+// body code would otherwise set those globals.
+import jQuery from './jquery-globals';
+// Imported under a non-`Vue` local name on purpose: exposing a bare top-level
+// `Vue` binding here makes the minifier keep "Vue" as a live identifier, which
+// then collides with a library internal that gets mangled to the same name
+// (perfect-scrollbar's element-matches helper), breaking it at runtime. The
+// public global that Blade inline scripts read stays `window.Vue`.
+import * as VueRuntime from 'vue';
+window.Vue = VueRuntime;
 import { createAdminApp } from './voyager-vue';
 window.VoyagerVue = { createAdminApp };
-import jQuery from 'jquery';
-window.jQuery = jQuery;
-window.$ = jQuery;
 import PerfectScrollbar from 'perfect-scrollbar';
-window.Cropper = require('cropperjs');
-window.Cropper = 'default' in window.Cropper ? window.Cropper['default'] : window.Cropper;
-window.toastr = require('toastr');
-require('datatables.net');
-require('datatables.net-bs5');
-window.EasyMDE = require('easymde');
-require('dropzone');
-require('jquery-match-height');
-require('nestable2');
+import Cropper from 'cropperjs';
+window.Cropper = Cropper;
+import toastr from 'toastr';
+window.toastr = toastr;
+import 'datatables.net';
+import 'datatables.net-bs5';
+import EasyMDE from 'easymde';
+window.EasyMDE = EasyMDE;
+import 'dropzone';
+import 'jquery-match-height';
+import 'nestable2';
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
-require('select2');
+// select2's CJS build exports a factory that must be explicitly invoked with
+// (root, jQuery) to actually register $.fn.select2 — a plain side-effect
+// import leaves the plugin's factory uncalled.
+import select2 from 'select2';
+select2(window, jQuery);
 import { TempusDominus } from '@eonasdan/tempus-dominus';
 window.TempusDominus = TempusDominus;
-var brace = require('brace');
-require('brace/mode/json');
-require('brace/theme/github');
-require('./slugify');
-window.TinyMCE = window.tinymce = require('tinymce');
-require('./multilingual');
-require('./voyager_tinymce');
-window.voyagerTinyMCE = require('./voyager_tinymce_config');
-require('./voyager_ace_editor');
-window.helpers = require('./helpers.js');
+import 'brace';
+import 'brace/mode/json';
+import 'brace/theme/github';
+import './slugify';
+import tinymce from 'tinymce';
+window.TinyMCE = window.tinymce = tinymce;
+import './multilingual';
+import './voyager_tinymce';
+import * as voyagerTinyMCE from './voyager_tinymce_config';
+window.voyagerTinyMCE = voyagerTinyMCE;
+import './voyager_ace_editor';
+import * as helpers from './helpers.js';
+window.helpers = helpers;
+import AdminMenu from './components/admin_menu.vue';
 
 var admin_menu = createAdminApp({}, {
-    'admin-menu': require('./components/admin_menu.vue').default,
+    'admin-menu': AdminMenu,
 }).mount('#adminmenu');
 
 $(document).ready(function () {
