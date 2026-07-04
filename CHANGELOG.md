@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.1] - 2026-07-03
+
+### Fixed
+
+- Several Bootstrap 5 admin-theme regressions left over from the 2.2.0 migration: the login button's "logging in"/"login" labels overlapping (still used the dropped `.hidden` class instead of `.d-none`) and losing its hover background; the sidebar/menu bundle failing to load (Vite build mixed `require()` with ES imports, silently dropping modules) along with related sidebar, submenu, and user-card styling; the profile dropdown not opening and shoving the avatar toggle sideways; breadcrumbs stacking vertically; the initial tab pane on Settings/Compass rendering blank; and DataTables' sort icons/pagination going unstyled (`datatables.net-bs5` had drifted to the 2.x line).
+- Media manager crashing on `admin/media` (`Cannot read properties of undefined (reading 'type')`). Vue 3 evaluates `v-if` before binding the `v-for` loop variable when both are on the same element (reversed from Vue 2), so the file-list filter and the move-to-folder dropdown received `undefined`. Both are now computed properties evaluated before the loop.
+- `php artisan voyager:admin --create` failing: a role-relationship migration re-declared `users.role_id` in `Blueprint::change()` without restating `nullable()`, which (without Doctrine DBAL) flips it to `NOT NULL` and breaks the insert-then-assign-role flow the command relies on.
+- Admin menu rendering a `TypeError` under Laravel 11+'s default `cache.serializable_classes = false`, which rejects unserializing the cached hydrated `Menu` model. The menu is now cached by id (a scalar) and re-queried with its eager loads on each call.
+- Published JS/CSS assets served with a one-year cache lifetime but a constant URL, so browsers kept stale bundles across upgrades until a hard refresh. `voyager_asset()` now appends a `&v=<mtime>` cache-busting token.
+
 ## [2.2.0] - 2026-07-02
 
 ### Changed
