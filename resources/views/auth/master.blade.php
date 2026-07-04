@@ -32,6 +32,9 @@
         .login-button, .bar:before, .bar:after{
             background:{{ config('voyager.primary_color','#22A7F0') }};
         }
+        .login-button:hover, .login-button:focus{
+            background:{{ config('voyager.primary_color','#22A7F0') }};
+        }
         .remember-me-text{
             padding:0 5px;
         }
