@@ -34,7 +34,7 @@
         </div>
         <ul class="nav navbar-nav @if (__('voyager::generic.is_rtl') == 'true') me-auto @else ms-auto @endif">
             <li class="dropdown profile">
-                <a href="#" class="dropdown-toggle text-right" data-bs-toggle="dropdown" role="button"
+                <a href="#" class="dropdown-toggle text-right" data-bs-toggle="dropdown" data-bs-display="static" role="button"
                    aria-expanded="false"><img src="{{ $user_avatar }}" class="profile-img"> <span
                             class="caret"></span></a>
                 <ul class="dropdown-menu dropdown-menu-animated">

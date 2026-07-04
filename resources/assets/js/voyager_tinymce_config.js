@@ -4,7 +4,7 @@
 |
 --------------------*/
 
-var getConfig = function(options) {
+export var getConfig = function(options) {
 
     var baseTinymceConfig = {
         menubar: false,
@@ -69,5 +69,3 @@ var getConfig = function(options) {
 
     return $.extend({}, baseTinymceConfig, options);
 }
-
-exports.getConfig = getConfig;

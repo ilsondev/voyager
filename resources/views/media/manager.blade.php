@@ -93,7 +93,7 @@
         <div class="flex">
             <div id="left">
                 <ul id="files">
-                    <li v-for="(file) in files" v-on:click="selectFile(file, $event)" v-on:dblclick="openFile(file)" v-if="filter(file)">
+                    <li v-for="(file) in filteredFiles" v-on:click="selectFile(file, $event)" v-on:dblclick="openFile(file)">
                         <div :class="'file_link ' + (isFileSelected(file) ? 'selected' : '')">
                             <div class="link_icon">
                                 <template v-if="fileIs(file, 'image')">
@@ -310,7 +310,7 @@
                     <select class="form-control" v-model="modals.move_files.destination">
                         <option value="" disabled>{{ __('voyager::media.destination_folder') }}</option>
                         <option v-if="current_folder != basePath && showFolders" value="/../">../</option>
-                        <option v-for="file in files" v-if="file.type == 'folder' && !selected_files.includes(file)" :value="current_folder+'/'+file.name">@{{ file.name }}</option>
+                        <option v-for="file in folderOptions" :value="current_folder+'/'+file.name">@{{ file.name }}</option>
                     </select>
                 </div>
 
@@ -459,6 +459,18 @@
         computed: {
             selected_file: function() {
                 return this.selected_files[0];
+            },
+            filteredFiles: function() {
+                var vm = this;
+                return this.files.filter(function(file) {
+                    return vm.filter(file);
+                });
+            },
+            folderOptions: function() {
+                var vm = this;
+                return this.files.filter(function(file) {
+                    return file.type == 'folder' && !vm.selected_files.includes(file);
+                });
             }
         },
         methods: {

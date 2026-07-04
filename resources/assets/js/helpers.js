@@ -4,7 +4,7 @@
 |
 --------------------*/
 
-var displayAlert = function(alert, alerter) {
+export var displayAlert = function(alert, alerter) {
     let alertMethod = alerter[alert.type];
 
     if (alertMethod) {
@@ -14,7 +14,7 @@ var displayAlert = function(alert, alerter) {
     alerter.error("No alert method found for alert type: " + alert.type);
 }
 
-var displayAlerts = function(alerts, alerter, type) {
+export var displayAlerts = function(alerts, alerter, type) {
     if (type) {
         // Only display alerts of this type...
         alerts = alerts.filter(function(alert) {
@@ -27,7 +27,7 @@ var displayAlerts = function(alerts, alerter, type) {
     }
 }
 
-var bootstrapAlerter = function(customOptions) {
+export var bootstrapAlerter = function(customOptions) {
     // Default options
     let options = {
         alertsContainer: '#alertsContainer',
@@ -71,11 +71,6 @@ var bootstrapAlerter = function(customOptions) {
     };
 }
 
-var setImageValue = function(url){
+export var setImageValue = function(url){
   $('.mce-btn.mce-open').parent().find('.mce-textbox').val(url);
 }
-
-exports.setImageValue = setImageValue;
-exports.displayAlert = displayAlert;
-exports.displayAlerts = displayAlerts;
-exports.bootstrapAlerter = bootstrapAlerter;

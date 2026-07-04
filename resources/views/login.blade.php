@@ -28,7 +28,7 @@
             </div>
 
             <button type="submit" class="btn btn-block login-button">
-                <span class="signingin hidden"><span class="voyager-refresh"></span> {{ __('voyager::login.loggingin') }}...</span>
+                <span class="signingin d-none"><span class="voyager-refresh"></span> {{ __('voyager::login.loggingin') }}...</span>
                 <span class="signin">{{ __('voyager::generic.login') }}</span>
             </button>
 
@@ -59,7 +59,7 @@
         btn.addEventListener('click', function(ev){
             if (form.checkValidity()) {
                 btn.querySelector('.signingin').className = 'signingin';
-                btn.querySelector('.signin').className = 'signin hidden';
+                btn.querySelector('.signin').className = 'signin d-none';
             } else {
                 ev.preventDefault();
             }
